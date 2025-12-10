@@ -35,6 +35,12 @@ import pdb
 from omegaconf import OmegaConf
 from verl.utils.tokenizer import get_processor, get_tokenizer
 
+
+
+def load_json(path: str) -> Any:
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
 def collate_fn(features: List[Dict[str, Any]]) -> Dict[str, Any]:
     tensors = defaultdict(list)
     non_tensors = defaultdict(list)
@@ -155,7 +161,6 @@ class RLHFDataset(Dataset):
                 "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
             )
         messages = [{"role": "user", "content": prompt_str}]
-        images=[process_image(image, self.max_pixels, self.min_pixels) for image in images]
 
         scalex,scaley=images[0].size
         gt_bbox=row_dict['gt_bbox']
@@ -208,34 +213,148 @@ class RLHFDataset(Dataset):
         row_dict["ground_truth"] = json.dumps(gt)
         return row_dict
 
+
+
 class Mind2WebDataset(Dataset):
-    pass
+    
+    def __init__(
+        self,
+        data_path: str,
+        tokenizer: PreTrainedTokenizer,
+        processor: Optional[ProcessorMixin],
+        prompt_key: str = "prompt",
+        answer_key: str = "answer",
+        image_key: str = "images",
+        max_prompt_length: int = 1024,
+        truncation: str = "error",
+        system_prompt: str = None,
+        max_pixels: int = None,
+        min_pixels: int = None,
+        use_history: bool = False,
+        image_dir: str = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    ):
+        self.tokenizer = tokenizer
+        self.processor = processor
+        self.prompt_key = prompt_key
+        self.answer_key = answer_key
+        self.image_key = image_key
+        self.max_prompt_length = max_prompt_length
+        self.truncation = truncation
+        self.system_prompt = system_prompt
+        self.max_pixels = max_pixels
+        self.min_pixels = min_pixels
+
+        # 通过 load_json 加载 mind2web 文件
+        self.dataset = load_json(data_path)
+        self.image_dir = image_dir
+        self.use_history = use_history
+        
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        
+        row_dict: dict = self.dataset[index]
+
+        # prompt_str: str = row_dict[self.prompt_key]
+        text = row_dict['task']
+        # history=row_dict['history']
+        # task_type=row_dict['task_type']
+        # row_dict.pop('verify_bbox', None)
+        # row_dict.pop('success_rate', None)
+        # row_dict.pop('scale', None)
+        # images=[row_dict['image']]
+        
+        
+        if self.use_history:
+            raise NotImplementedError
+            prompt_str = (
+                f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}', with the action history being '{history}'.\n"
+                "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
+                "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
+                "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
+                "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
+                "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
+                "[{'action': enum['type', 'select'], 'point': [-100, -100], 'input_text': 'shanghai shopping mall'}]\n"
+            )
+        else:
+            prompt_str = (
+                f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}' on the current screenshot.\n"
+                "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
+                "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
+                "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
+                "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
+                "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
+                "[{'action': enum['type', 'select'], 'point': [-100, -100], 'input_text': 'shanghai shopping mall'}]\n"
+            )
+        
+        messages = [{"role": "user", "content": prompt_str}]
+        
+        image_url = row_dict["img_url"]
+        image_path = os.path.join(self.image_dir, image_url)
+        images=[process_image(image_path, self.max_pixels, self.min_pixels)]
+        
+        bbox = row_dict["step"]["bbox"]
+        x = bbox["x"]
+        y = bbox["y"]
+        width = bbox["width"]
+        height = bbox["height"]
+        
+        gt_bbox = [x, y, x + width, y + height]
+        gt_op = row_dict['step']['operation']['op']
+        gt_op = gt_op.lower() # 转换为小写
+        gt={'action': gt_op,'gt_bbox': gt_bbox,'input_text': row_dict['step']['operation']['value']}
+        # if self.system_prompt:
+        #     messages.insert(0, {"role": "system", "content": self.system_prompt})
+
+        prompt = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+
+        # if self.image_key in row_dict:
+        prompt = prompt.replace("<image>", "<|vision_start|><|image_pad|><|vision_end|>")
+        row_dict["multi_modal_data"] = {
+            "image": images
+        }
+        model_inputs = self.processor(row_dict["multi_modal_data"]["image"], prompt, return_tensors="pt")
+        input_ids = model_inputs.pop("input_ids")[0]
+        attention_mask = model_inputs.pop("attention_mask")[0]
+        row_dict["multi_modal_inputs"] = dict(model_inputs)
+        position_ids = get_rope_index(
+            self.processor,
+            input_ids=input_ids,
+            image_grid_thw=model_inputs["image_grid_thw"],
+            attention_mask=attention_mask,
+        )  # (3, seq_length)
+        # else:
+        #     model_inputs = self.tokenizer([prompt], add_special_tokens=False, return_tensors="pt")
+        #     input_ids = model_inputs.pop("input_ids")[0]
+        #     attention_mask = model_inputs.pop("attention_mask")[0]
+        #     position_ids = torch.clip(attention_mask.cumsum(dim=0) - 1, min=0, max=None)  # (seq_length,)
+
+        input_ids, attention_mask, position_ids = VF.postprocess_data(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            max_length=self.max_prompt_length,
+            pad_token_id=self.tokenizer.pad_token_id,
+            left_pad=True,
+            truncation=self.truncation,
+        )
+        row_dict["input_ids"] = input_ids
+        row_dict["attention_mask"] = attention_mask
+        row_dict["position_ids"] = position_ids
+        row_dict["raw_prompt_ids"] = self.tokenizer.encode(prompt, add_special_tokens=False)
+        row_dict["ground_truth"] = json.dumps(gt)
+        return row_dict
 
 
 if __name__ == "__main__":
     
-    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config.yaml"
-    # with open(config_path, "r") as f:
-    #     config = yaml.safe_load(f)
-    
-    # train_dataset = RLHFDataset(
-    #     data_path="/home/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/train.parquet",
-    #     tokenizer=tokenizer,
-    #     processor=processor,
-    #     prompt_key=config["data"]["prompt_key"],
-    #     answer_key=config["data"]["answer_key"],
-    #     image_key=config["data"]["image_key"],
-    #     max_prompt_length=config["data"]["max_prompt_length"],
-    #     truncation="right",
-    #     system_prompt=config["data"]["system_prompt"],
-    #     min_pixels=config["data"]["min_pixels"],
-    #     max_pixels=config["data"]["max_pixels"],
-    # )
-    
+    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config.yaml"    
     config = OmegaConf.load(config_path)
     config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
     config.data.system_prompt = """"""
-    gui_r1_train_path = "/home/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/train.parquet"
+    mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
+    mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(
@@ -249,8 +368,9 @@ if __name__ == "__main__":
         use_fast=True,
     )
     
-    train_dataset = RLHFDataset(
-        data_path=gui_r1_train_path,
+    train_dataset = Mind2WebDataset(
+        data_path=mind2web_train_path,
+        image_dir=mind2web_image_dir,
         tokenizer=tokenizer,
         processor=processor,
         prompt_key=config.data.prompt_key,
@@ -261,4 +381,8 @@ if __name__ == "__main__":
         system_prompt=config.data.system_prompt,
         min_pixels=config.data.min_pixels,
         max_pixels=config.data.max_pixels,
+        use_history=False
     )
+
+    import pdb
+    pdb.set_trace()

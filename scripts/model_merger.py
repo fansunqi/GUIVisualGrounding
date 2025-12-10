@@ -147,7 +147,9 @@ if __name__ == "__main__":
         raise NotImplementedError(f"Unknown architecture {config.architectures}")
 
     with torch.device("meta"):
-        model = auto_model.from_config(config, torch_dtype=torch.bfloat16)
+        # model = auto_model.from_config(config, torch_dtype=torch.bfloat16)
+        model = auto_model.from_config(config)
+        model = model.to(torch.bfloat16)
 
     model.to_empty(device="cpu")
 

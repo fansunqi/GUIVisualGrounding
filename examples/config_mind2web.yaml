@@ -6,7 +6,7 @@ data:
   image_key: images
   max_prompt_length: 2048
   max_response_length: 2048
-  rollout_batch_size: 512
+  rollout_batch_size: 128
   val_batch_size: -1
   shuffle: true
   seed: 1
@@ -43,8 +43,8 @@ worker:
       enable_cpu_offload: false
       enable_rank0_init: true
     offload:
-      offload_params: true  # true: more CPU memory; false: more GPU memory
-      offload_optimizer: true  # true: more CPU memory; false: more GPU memory
+      offload_params: false  # true: more CPU memory; false: more GPU memory
+      offload_optimizer: false  # true: more CPU memory; false: more GPU memory
 
   rollout:
     temperature: 1.0
@@ -61,7 +61,7 @@ worker:
   ref:
     fsdp:
       enable_full_shard: true
-      enable_cpu_offload: true  # true: more CPU memory; false: more GPU memory
+      enable_cpu_offload: false  # true: more CPU memory; false: more GPU memory
       enable_rank0_init: true
     offload:
       offload_params: false
@@ -71,7 +71,7 @@ worker:
     compute_score: math
 
 trainer:
-  total_episodes: 15
+  total_episodes: 30
   # logger: ["console", "wandb"]
   # logger: ["console"]
   logger: ["console", "tensorboard"]
@@ -85,5 +85,5 @@ trainer:
   val_generations_to_log: 1
   save_freq: 5  # -1 to disable
   save_limit: -1  # -1 to disable
-  save_checkpoint_path: /home/fsq/gui_agent/GUI-R1/ckpt
+  save_checkpoint_path: null
   load_checkpoint_path: null

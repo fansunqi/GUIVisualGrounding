@@ -40,7 +40,7 @@ from ..single_controller.ray import RayClassWithInitArgs, RayResourcePool, RayWo
 from ..single_controller.ray.base import create_colocated_worker_cls
 from ..utils import torch_functional as VF
 from ..utils.checkpoint import CHECKPOINT_TRACKER, remove_obsolete_ckpt
-from ..utils.dataset import RLHFDataset, collate_fn
+from ..utils.dataset import RLHFDataset, collate_fn, Mind2WebDataset
 from ..utils.logger import Tracker
 from ..utils.py_functional import convert_dict_to_str
 from ..utils.seqlen_balancing import get_seqlen_balanced_partitions, log_seqlen_unbalance
@@ -257,7 +257,20 @@ class RayPPOTrainer:
         self._create_dataloader()
 
     def _create_dataloader(self) -> None:
-        self.train_dataset = RLHFDataset(
+        # self.train_dataset = RLHFDataset(
+        #     data_path=self.config.data.train_files,
+        #     tokenizer=self.tokenizer,
+        #     processor=self.processor,
+        #     prompt_key=self.config.data.prompt_key,
+        #     answer_key=self.config.data.answer_key,
+        #     image_key=self.config.data.image_key,
+        #     max_prompt_length=self.config.data.max_prompt_length,
+        #     truncation="right",
+        #     system_prompt=self.config.data.system_prompt,
+        #     min_pixels=self.config.data.min_pixels,
+        #     max_pixels=self.config.data.max_pixels,
+        # )
+        self.train_dataset = Mind2WebDataset(
             data_path=self.config.data.train_files,
             tokenizer=self.tokenizer,
             processor=self.processor,
@@ -288,7 +301,20 @@ class RayPPOTrainer:
             drop_last=True,
         )
 
-        self.val_dataset = RLHFDataset(
+        # self.val_dataset = RLHFDataset(
+        #     data_path=self.config.data.val_files,
+        #     tokenizer=self.tokenizer,
+        #     processor=self.processor,
+        #     prompt_key=self.config.data.prompt_key,
+        #     answer_key=self.config.data.answer_key,
+        #     image_key=self.config.data.image_key,
+        #     max_prompt_length=self.config.data.max_prompt_length,
+        #     truncation="right",
+        #     system_prompt=self.config.data.system_prompt,
+        #     min_pixels=self.config.data.min_pixels,
+        #     max_pixels=self.config.data.max_pixels,
+        # )
+        self.val_dataset = Mind2WebDataset(
             data_path=self.config.data.val_files,
             tokenizer=self.tokenizer,
             processor=self.processor,
