@@ -295,12 +295,28 @@ class Mind2WebDataset(Dataset):
         images=[process_image(image_path, self.max_pixels, self.min_pixels)]
         
         bbox = row_dict["step"]["bbox"]
-        x = bbox["x"]
-        y = bbox["y"]
-        width = bbox["width"]
-        height = bbox["height"]
+        if isinstance(bbox, dict):
+            
+            x = bbox["x"]
+            y = bbox["y"]
+            width = bbox["width"]
+            height = bbox["height"]
+            
+            gt_bbox = [x, y, x + width, y + height]
+        elif isinstance(bbox, list):
+            gt_bbox = []
+            for single_bbox in bbox:
+                x = single_bbox["x"]
+                y = single_bbox["y"]
+                width = single_bbox["width"]
+                height = single_bbox["height"]
+                
+                single_gt_bbox = [x, y, x + width, y + height]
+                gt_bbox.append(single_gt_bbox)
+        else:
+            raise NotImplementedError
+                
         
-        gt_bbox = [x, y, x + width, y + height]
         gt_op = row_dict['step']['operation']['op']
         gt_op = gt_op.lower() # 转换为小写
         gt={'action': gt_op,'gt_bbox': gt_bbox,'input_text': row_dict['step']['operation']['value']}

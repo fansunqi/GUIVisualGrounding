@@ -73,7 +73,7 @@ def extract_coord(content):
     except:
         return [0, 0, 0, 0], False
     
-def r1gui_format_reward(predict_str: str) -> float:
+def r1ws_format_reward(predict_str: str) -> float:
     """
     检查 predict_str 是否符合 <think></think><answer></answer> 的格式，
     并验证 <answer> 中的内容是否符合 [{'action': 'action', 'point': '[x,y]', 'input_text': 'no input text'}] 的格式要求。
@@ -121,7 +121,7 @@ def r1gui_format_reward(predict_str: str) -> float:
     except:
         return 0.0
 
-def r1gui_accuracy_reward(predict_str: str, ground_truth: str) -> float:
+def r1ws_accuracy_reward(predict_str: str, ground_truth: str) -> float:
     """
     比较 predict_str 和 ground_truth 中的动作和参数是否一致。
     """
@@ -129,7 +129,7 @@ def r1gui_accuracy_reward(predict_str: str, ground_truth: str) -> float:
         # 提取 ground_truth 的动作和参数
         ground_truth=json.loads(ground_truth)
         gt_action=ground_truth['action'].lower()
-        gt_bbox=ground_truth['gt_bbox']
+        gt_bboxes=ground_truth['gt_bbox']
         gt_input_text=ground_truth['input_text']
         pred_action=extract_action(predict_str).lower()
         pred_input_text=extract_input_text(predict_str)
@@ -138,19 +138,33 @@ def r1gui_accuracy_reward(predict_str: str, ground_truth: str) -> float:
         if pred_action!=gt_action:
             return 0.0
         
+        # 之后可以试一下所有操作都要看 bbox
         if pred_action in ["click"]:
-            if len(gt_bbox)==2:
-                if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
-                    return 1.0
-                else:
-                    return 0.0
-            elif len(gt_bbox)==4:
-                if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
-                    return 1.0
-                else:
-                    return 0.0
-            else:
+            if isinstance(gt_bboxes[0], list):
+                for gt_bbox in gt_bboxes:
+                    if len(gt_bbox)==2:
+                        if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
+                            return 1.0
+                    elif len(gt_bbox)==4:
+                        if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
+                            return 1.0
                 return 0.0
+            else:
+                gt_bbox = gt_bboxes
+                if len(gt_bbox)==2:
+                    if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
+                        return 1.0
+                    else:
+                        return 0.0
+                elif len(gt_bbox)==4:
+                    if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
+                        return 1.0
+                    else:
+                        return 0.0
+                else:
+                    return 0.0
+        
+        # NOTE 这里好像有点问题, 下面的操作不需要看 bbox
         elif pred_action in ['type', 'select','scroll']:
             if calculate_f1_score(pred_input_text,gt_input_text)>=0.5:
                 return 1.0
@@ -162,9 +176,9 @@ def r1gui_accuracy_reward(predict_str: str, ground_truth: str) -> float:
     except Exception as e:
         return 0.0
     
-def r1gui_compute_score(predict_str: str, ground_truth: str):
-    format = r1gui_format_reward(predict_str)
-    accuracy = r1gui_accuracy_reward(predict_str, ground_truth)
+def r1ws_compute_score(predict_str: str, ground_truth: str):
+    format = r1ws_format_reward(predict_str)
+    accuracy = r1ws_accuracy_reward(predict_str, ground_truth)
     return {
         "overall": 0.8 * accuracy + 0.2 * format,
         "format": format,
