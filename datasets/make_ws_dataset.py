@@ -150,3 +150,4 @@ if __name__ == "__main__":
     with open(new_data_path, 'w', encoding='utf-8') as f:
         json.dump(train_data_new, f, ensure_ascii=False, indent=2)
     
+

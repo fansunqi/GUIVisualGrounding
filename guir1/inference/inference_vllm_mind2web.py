@@ -63,17 +63,20 @@ def extract_coord(content):
         return [0, 0, 0, 0], False
     
 
+# NOTE 看一下这里的 resize 对坐标有没有影响
 def process_image(image: Union[Dict[str, Any], ImageObject], max_pixels: int, min_pixels: int) -> ImageObject:
     if isinstance(image, dict):
         image = Image.open(BytesIO(image["bytes"]))
     if isinstance(image, str):
         image = Image.open(image)
     if (image.width * image.height) > max_pixels:
+        print("Image size (in pixels) exceeds the maximum limit. Resizing the image.")
         resize_factor = math.sqrt(max_pixels / (image.width * image.height))
         width, height = int(image.width * resize_factor), int(image.height * resize_factor)
         image = image.resize((width, height))
 
     if (image.width * image.height) < min_pixels:
+        print("Image size (in pixels) is below the minimum limit. Resizing the image.")
         resize_factor = math.sqrt(min_pixels / (image.width * image.height))
         width, height = int(image.width * resize_factor), int(image.height * resize_factor)
         image = image.resize((width, height))
@@ -91,6 +94,7 @@ class MultiModalDataset(Dataset):
         self.data = data
         self.processor = processor
         self.processor.max_pixels=2097152
+        self.processor.min_pixels=262144
         self.image_dir = image_dir
 
     def __len__(self):
@@ -108,7 +112,7 @@ class MultiModalDataset(Dataset):
 
         # sys_prompt='''A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> nd <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>'''
         text = (
-            f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}' on the current screenshot.\n"
+            f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{task}' on the current screenshot.\n"
             "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
             "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
             "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
@@ -224,14 +228,22 @@ class Worker:
 
             # 保存结果
             for original_sample, output in zip(original_samples, outputs):
+                result_item = {}
+                result_item["id"] = original_sample["id"]
+                result_item["action_id"] = original_sample["action_uid"]
+                
                 generated_text = output.outputs[0].text
-                gt_bbox = original_sample["gt_bbox"]
-                original_sample["pred"] = generated_text
+                result_item["pred"] = generated_text
+                
+                gt_bbox = original_sample["step"]["bbox"]
+                gt_op = original_sample["step"]["operation"]
+                result_item["gt_coord"] = gt_bbox
+                result_item["gt_op"] = gt_op
+                
                 pred_coord, _ = extract_coord(generated_text)
-                original_sample["pred_coord"] = [pred_coord[0]*original_sample["scale"][0],pred_coord[1]*original_sample["scale"][1]]
-                original_sample["scale"]=[]
-                original_sample["image"]=''
-                results.append(original_sample)
+                result_item["pred_coord"] = pred_coord
+
+                results.append(result_item)
 
         return results
     
@@ -255,7 +267,7 @@ def main(args):
     
     num_actors = args.num_actor
     
-    data_chunks = [hf_dataset.from_dict(data[i::num_actors]) for i in range(num_actors)]
+    data_chunks = [hf_dataset.from_list(data[i::num_actors]) for i in range(num_actors)]
     
     # 加载处理器
     processor = AutoProcessor.from_pretrained(MODEL_PATH)
