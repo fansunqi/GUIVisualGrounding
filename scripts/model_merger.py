@@ -36,7 +36,7 @@ def merge_by_placement(tensors: List[torch.Tensor], placement: Placement):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--local_dir", required=True, type=str, help="The path for your saved model")
+    parser.add_argument("--local_dir", required=True, type=str, help="The path for your saved model") # 一般是以 actor 结尾的
     parser.add_argument("--hf_upload_path", default=False, type=str, help="The path of the huggingface repo to upload")
     args = parser.parse_args()
 
