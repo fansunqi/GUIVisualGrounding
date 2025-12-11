@@ -1,4 +1,5 @@
 import os
+os.environ["TORCH_COMPILE_CACHE"] = "/data/fsq/vllm_cache"
 import re
 import ray
 import json
@@ -199,6 +200,16 @@ def custom_collate_fn(batch):
 @ray.remote(num_gpus=1)
 class Worker:
     def __init__(self, model_path, sampling_params):
+        
+        # 每个 Ray Worker 拥有独立的缓存目录
+        # 获取 Ray 的 worker ID 来区分
+        worker_id = ray.get_runtime_context().get_node_id()  # 唯一ID
+        pid = os.getpid()  # 或者用进程号
+        cache_dir = f"/data/fsq/torchinductor_ray/worker_{worker_id}_{pid}"
+        os.makedirs(cache_dir, exist_ok=True)
+        os.environ["TORCHINDUCTOR_CACHE_DIR"] = cache_dir
+        print(f"[Worker Init] Using TORCHINDUCTOR_CACHE_DIR={cache_dir}")
+        
         self.llm = LLM(
             model=model_path,
             limit_mm_per_prompt={"image": 1, "video": 1},
