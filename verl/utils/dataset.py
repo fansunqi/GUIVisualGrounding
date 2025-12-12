@@ -231,7 +231,7 @@ class Mind2WebDataset(Dataset):
         max_pixels: int = None,
         min_pixels: int = None,
         use_history: bool = False,
-        image_dir: str = "/data/fsq/gui_agent_data/Mind2Web/images/"
+        img_dir: str = None
     ):
         self.tokenizer = tokenizer
         self.processor = processor
@@ -246,7 +246,7 @@ class Mind2WebDataset(Dataset):
 
         # 通过 load_json 加载 mind2web 文件
         self.dataset = load_json(data_path)
-        self.image_dir = image_dir
+        self.image_dir = img_dir
         self.use_history = use_history
         
     def __len__(self):
