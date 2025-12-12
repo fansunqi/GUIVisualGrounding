@@ -1,0 +1,2 @@
+total: 1371, valid: 1370, correct: 482
+accuracy: 0.3515681983953319

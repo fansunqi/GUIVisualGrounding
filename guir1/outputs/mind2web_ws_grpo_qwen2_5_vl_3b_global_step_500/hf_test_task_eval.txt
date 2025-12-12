@@ -1,0 +1,2 @@
+total: 2080, valid: 2080, correct: 675
+accuracy: 0.3245192307692308
