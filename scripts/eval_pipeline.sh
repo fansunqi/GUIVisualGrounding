@@ -2,8 +2,10 @@
 set -x
 cd /home/fsq/gui_agent/GUI-R1/scripts/
 
+export TORCH_COMPILE_CACHE=/data/fsq/vllm_cache
+
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(250 300 350 400 450 500 550 600)
+ckpt_numbers=(25 75 125 175 225 275 325 375 425 475 525 575)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    
@@ -22,19 +24,22 @@ for ckpt_num in "${ckpt_numbers[@]}"; do
     python inference/inference_vllm_mind2web.py \
         --model_path /data/fsq/GUI-R1_exp/mind2web_ws_grpo_qwen2_5_vl_3b/global_step_$ckpt_num/actor/huggingface \
         --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
-        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num
+        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num \
+        --num_actor 2
     python eval/eval_mind2web.py \
         --pred_path /home/fsq/gui_agent/GUI-R1/guir1/outputs/mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num/hf_test_task.json
     python inference/inference_vllm_mind2web.py \
         --model_path /data/fsq/GUI-R1_exp/mind2web_ws_grpo_qwen2_5_vl_3b/global_step_$ckpt_num/actor/huggingface \
         --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_website.json \
-        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num
+        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num \
+        --num_actor 2
     python eval/eval_mind2web.py \
         --pred_path /home/fsq/gui_agent/GUI-R1/guir1/outputs/mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num/hf_test_website.json
     python inference/inference_vllm_mind2web.py \
         --model_path /data/fsq/GUI-R1_exp/mind2web_ws_grpo_qwen2_5_vl_3b/global_step_$ckpt_num/actor/huggingface \
         --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_domain.json \
-        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num
+        --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num \
+        --num_actor 2
     python eval/eval_mind2web.py \
         --pred_path /home/fsq/gui_agent/GUI-R1/guir1/outputs/mind2web_ws_grpo_qwen2_5_vl_3b_global_step_$ckpt_num/hf_test_domain.json
     cd ..

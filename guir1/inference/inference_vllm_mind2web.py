@@ -38,7 +38,7 @@ SAMPLING_PARAMS = SamplingParams(
 DATA_PATH = ""
 
 # 微批大小
-MICRO_BATCH = 6
+MICRO_BATCH = 4
 
 
 def extract_coord(content):
