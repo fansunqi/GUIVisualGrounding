@@ -72,14 +72,13 @@ if __name__ == '__main__':
     parser.add_argument('--prediction_file_path', type=str, default='<prediction_file_path>')
     parser.add_argument('--model_id', type=str, default="<model_id>")
     parser.add_argument('--datasets', type=str, default='')
-    parser.add_argument('--output_path', type=str, default='./outputs/score/')
+    # parser.add_argument('--output_path', type=str, default='')
     parser.add_argument('--seed', type=int, default=0)
     args = parser.parse_args()
 
-    if not os.path.exists(args.output_path):
-        os.makedirs(args.output_path)
+    output_path = args.prediction_file_path.replace('.json', '_score.log')
 
-    file_handler = logging.FileHandler(args.output_path + f"score.log", mode='a+')
+    file_handler = logging.FileHandler(output_path, mode='a+')
     file_handler.setLevel(logging.INFO)
 
     console_handler = logging.StreamHandler()
