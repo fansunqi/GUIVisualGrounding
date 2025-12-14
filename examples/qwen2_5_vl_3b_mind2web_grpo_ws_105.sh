@@ -25,7 +25,7 @@ python3 -m verl.trainer.main \
     worker.rollout.tensor_parallel_size=1 \
     worker.rollout.enable_chunked_prefill=false \
     worker.reward.compute_score=r1ws \
-    trainer.experiment_name=$EXP_NAME \
+    trainer.experiment_name=${EXP_NAME} \
     trainer.n_gpus_per_node=8 \
     trainer.save_checkpoint_path=${SAVE_PATH} \
     data.max_pixels=1258291 \
