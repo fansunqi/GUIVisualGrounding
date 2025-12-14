@@ -257,7 +257,7 @@ class Mind2WebDataset(Dataset):
         row_dict: dict = self.dataset[index]
 
         # prompt_str: str = row_dict[self.prompt_key]
-        text = row_dict['task']
+        # text = row_dict['task']
         # history=row_dict['history']
         # task_type=row_dict['task_type']
         # row_dict.pop('verify_bbox', None)
@@ -265,6 +265,7 @@ class Mind2WebDataset(Dataset):
         # row_dict.pop('scale', None)
         # images=[row_dict['image']]
         
+        text = "click any clickable area on the page, such as a button, but not a blank space"
         
         if self.use_history:
             raise NotImplementedError
