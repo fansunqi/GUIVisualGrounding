@@ -213,6 +213,8 @@ class Worker:
         self.llm = LLM(
             model=model_path,
             limit_mm_per_prompt={"image": 1, "video": 1},
+            gpu_memory_utilization=0.95,
+            max_model_len=56000,
         )
         self.sampling_params = sampling_params
 

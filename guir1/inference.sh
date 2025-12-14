@@ -15,10 +15,31 @@
 #     --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_domain.json \
 #     --output_name mind2web_ws_grpo_qwen2_5_vl_3b_global_step_50
 
+# 105 ui-tars-2b-sft
+# python inference/inference_vllm_mind2web.py \
+#     --model_path /mnt/Shared_05_disk/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-2B-SFT/snapshots/f366a1db3e7f29635f5b236d6a71dea367a0a700 \
+#     --data_path /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
+#     --image_dir /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/images \
+#     --output_name ui_tars_2b_sft \
+#     --num_actor 2
 
-python inference/inference_vllm_mind2web.py \
-    --model_path /mnt/Shared_05_disk/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-2B-SFT/snapshots/f366a1db3e7f29635f5b236d6a71dea367a0a700 \
-    --data_path /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
-    --image_dir /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/images \
-    --output_name ui_tars_2b_sft \
-    --num_actor 2
+# 103 ui-tars-7b
+# python inference/inference_vllm_mind2web.py \
+#     --model_path /mnt/Shared_06_disk1/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-1.5-7B/snapshots/683d002dd99d8f95104d31e70391a39348857f4e \
+#     --data_path /mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_test_task.json \
+#     --image_dir /mnt/Shared_06_disk1/fsq/data/Mind2Web/images \
+#     --output_name ui_tars_1_5_7b \
+#     --num_actor 6
+
+# 103 ui-tars-7b only point
+# python inference/inference_vllm_mind2web_only_point.py \
+#     --model_path /mnt/Shared_06_disk1/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-1.5-7B/snapshots/683d002dd99d8f95104d31e70391a39348857f4e \
+#     --data_path /mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_test_task.json \
+#     --image_dir /mnt/Shared_06_disk1/fsq/data/Mind2Web/images \
+#     --output_name ui_tars_1_5_7b_only_point \
+#     --num_actor 6
+
+python inference/inference_vllm_screenspot_only_point.py \
+    --model_path /mnt/Shared_06_disk1/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-1.5-7B/snapshots/683d002dd99d8f95104d31e70391a39348857f4e \
+    --data_path /mnt/Shared_06_disk1/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/screenspot_pro_test.parquet \
+    --num_actor 7
