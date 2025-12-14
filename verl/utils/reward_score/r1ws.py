@@ -166,8 +166,33 @@ def r1ws_accuracy_reward(predict_str: str, ground_truth: str) -> float:
         
         # NOTE 这里好像有点问题, 下面的操作不需要看 bbox
         elif pred_action in ['type', 'select','scroll']:
+                        
+            # 只要 f1 大于 0.5 就给满分 -> f1 > 0.5 且 grounding 正确
             if calculate_f1_score(pred_input_text,gt_input_text)>=0.5:
-                return 1.0
+                
+                if isinstance(gt_bboxes[0], list):
+                    for gt_bbox in gt_bboxes:
+                        if len(gt_bbox)==2:
+                            if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
+                                return 1.0
+                        elif len(gt_bbox)==4:
+                            if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
+                                return 1.0
+                    return 0.0
+                else:
+                    gt_bbox = gt_bboxes
+                    if len(gt_bbox)==2:
+                        if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
+                            return 1.0
+                        else:
+                            return 0.0
+                    elif len(gt_bbox)==4:
+                        if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
+                            return 1.0
+                        else:
+                            return 0.0
+                    else:
+                        return 0.0
             else:
                 return 0.0
         else:
