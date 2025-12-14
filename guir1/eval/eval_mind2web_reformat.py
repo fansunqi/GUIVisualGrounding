@@ -130,8 +130,6 @@ def calculate_mind2web_metrics(results):
             if step_result["Op_F1"][1] in op_f1:
                 op_f1[step_result["Op_F1"][1]].append(step_result["Op_F1"][0])
             macro_action_f1[i].append(step_result["Op_F1"][0])
-            
-            # import pdb; pdb.set_trace()
 
             if step_result["Op_F1"][0] == 1.0 and step_result["Ele_match"]:
                 num_step_success += 1
@@ -142,8 +140,6 @@ def calculate_mind2web_metrics(results):
 
         if episode_success:
             num_episode_success += 1
-
-    # import pdb; pdb.set_trace()
     
     marco_op_f1 = np.mean([np.mean(x) for x in op_f1.values()])
     macro_ele_acc = np.mean([np.mean(x) for x in macro_ele_acc.values()])
@@ -241,15 +237,12 @@ def main(args):
                     pred_str += ' '
                     pred_str += action_pred["input_text"].lower()
                     
-                    import pdb; pdb.set_trace()
                 
                 action_ref_idx = action2id[answer["action"]]
                 ref_str = str(action_ref_idx)
                 if answer["action"] in ['TYPE', 'SELECT']:
                     ref_str += ' '
                     ref_str += answer["value"].lower()
-                    
-                    # import pdb; pdb.set_trace()
                     
                 op_f1 = calculate_f1(pred_str, ref_str)
                 step_result["Op_F1"][0] = op_f1
@@ -270,8 +263,8 @@ def main(args):
         
     metric = sum([x["Macro Step Success Rate"] for x in eval_dict.values()]) / len(eval_dict)
 
-    save_json(results, os.path.join(args.output_path, f'mind2web_tmp_dict.json'))
-    save_json(eval_dict, os.path.join(args.output_path, f'mind2web_res_dict.json'))
+    # save_json(results, os.path.join(args.output_path, f'mind2web_tmp_dict.json'))
+    save_json(eval_dict, os.path.join(args.output_path, f'reformat_eval.json'))
                 
                 
             
