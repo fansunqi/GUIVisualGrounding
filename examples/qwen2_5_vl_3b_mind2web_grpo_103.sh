@@ -32,4 +32,4 @@ python3 -m verl.trainer.main \
     data.max_response_length=1024 \
     data.val_batch_size=512 \
     data.img_dir=/mnt/Shared_06_disk1/fsq/data/Mind2Web/images \
-    trainer.load_checkpoint_path=/mnt/Shared_06_disk1/fsq/gui-r1_exp/mind2web_gt_sim_0_9_grpo_qwen2_5_vl_3b/global_step_325
+    trainer.load_checkpoint_path=/mnt/Shared_06_disk1/fsq/gui-r1_exp/mind2web_gt_sim_0_9_grpo_qwen2_5_vl_3b/global_step_325 # resume

@@ -97,7 +97,7 @@ class MultiModalDataset(Dataset):
             "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
             "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
             "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
-            "[{'action': enum['type', 'select'], 'point': [-100, -100], 'input_text': 'shanghai shopping mall'}]\n"
+            "[{'action': enum['type', 'select'], 'point': [100, 100], 'input_text': 'shanghai shopping mall'}]\n"
         )
         text = '<image>\n' + text
         message = [
