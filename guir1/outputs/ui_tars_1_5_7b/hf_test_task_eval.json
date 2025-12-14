@@ -1,0 +1,16 @@
+{
+    "test_task": {
+        "Operation F1": 0.16093094832038632,
+        "Element Accuracy": 0.11538461538461539,
+        "Step Success": 0.09375,
+        "Episode Success": 0.003968253968253968,
+        "Operation F1 categories": [
+            0.3968432919954904,
+            0.07033773861967693,
+            0.015611814345991562
+        ],
+        "Macro Element Accuracy": 0.13073760502146045,
+        "Macro Operation F1": 0.329677964327242,
+        "Macro Step Success Rate": 0.107499701014999
+    }
+}

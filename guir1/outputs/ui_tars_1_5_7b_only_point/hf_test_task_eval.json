@@ -1,0 +1,16 @@
+{
+    "test_task": {
+        "Operation F1": 0.0,
+        "Element Accuracy": 0.0,
+        "Step Success": 0.0,
+        "Episode Success": 0.0,
+        "Operation F1 categories": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.0,
+        "Macro Operation F1": 0.0,
+        "Macro Step Success Rate": 0.0
+    }
+}

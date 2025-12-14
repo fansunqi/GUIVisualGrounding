@@ -1,0 +1,16 @@
+{
+    "test_domain": {
+        "Operation F1": 0.33458961474036847,
+        "Element Accuracy": 0.39092315626611657,
+        "Step Success": 0.3797490115179646,
+        "Episode Success": 0.3797490115179646,
+        "Operation F1 categories": [
+            1.0,
+            0.003768844221105527,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.39092315626611657,
+        "Macro Operation F1": 0.8408114148186351,
+        "Macro Step Success Rate": 0.3797490115179646
+    }
+}
