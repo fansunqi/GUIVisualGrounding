@@ -48,6 +48,8 @@ class DataConfig:
     max_pixels: int = 4194304
     min_pixels: int = 262144
     img_dir: Optional[str] = None
+    train_use_task: bool = True
+    val_use_task: bool = True
 
 
 @dataclass

@@ -231,7 +231,8 @@ class Mind2WebDataset(Dataset):
         max_pixels: int = None,
         min_pixels: int = None,
         use_history: bool = False,
-        img_dir: str = None
+        img_dir: str = None,
+        use_task: bool = True,
     ):
         self.tokenizer = tokenizer
         self.processor = processor
@@ -265,7 +266,11 @@ class Mind2WebDataset(Dataset):
         # row_dict.pop('scale', None)
         # images=[row_dict['image']]
         
-        text = "click any clickable area on the page, such as a button, but not a blank space"
+        if use_task:
+            text = row_dict['task']
+        else:
+            text = "click any clickable area on the page, such as a button, but not a blank space"
+            
         
         if self.use_history:
             raise NotImplementedError

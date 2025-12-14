@@ -13,6 +13,8 @@ data:
   max_pixels: 4194304
   min_pixels: 262144
   img_dir: null
+  train_use_task: true
+  val_use_task: true
 
 algorithm:
   adv_estimator: grpo
