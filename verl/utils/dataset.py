@@ -249,6 +249,7 @@ class Mind2WebDataset(Dataset):
         self.dataset = load_json(data_path)
         self.image_dir = img_dir
         self.use_history = use_history
+        self.use_task = use_task
         
     def __len__(self):
         return len(self.dataset)
@@ -266,7 +267,7 @@ class Mind2WebDataset(Dataset):
         # row_dict.pop('scale', None)
         # images=[row_dict['image']]
         
-        if use_task:
+        if self.use_task:
             text = row_dict['task']
         else:
             text = "click any clickable area on the page, such as a button, but not a blank space"
