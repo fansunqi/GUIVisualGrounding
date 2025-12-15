@@ -50,6 +50,8 @@ class DataConfig:
     img_dir: Optional[str] = None
     train_use_task: bool = True
     val_use_task: bool = True
+    use_history: bool = False
+    history_num: int = 0
 
 
 @dataclass

@@ -15,6 +15,8 @@ data:
   img_dir: null
   train_use_task: true
   val_use_task: true
+  use_history: false
+  history_num: 0
 
 algorithm:
   adv_estimator: grpo

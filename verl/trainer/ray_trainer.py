@@ -284,6 +284,8 @@ class RayPPOTrainer:
             max_pixels=self.config.data.max_pixels,
             img_dir=self.config.data.img_dir,
             use_task=self.config.data.train_use_task,
+            use_history=self.config.data.use_history,
+            history_num=self.config.data.history_num,
         )
         # use sampler for better ckpt resume
         if self.config.data.shuffle:
@@ -330,6 +332,8 @@ class RayPPOTrainer:
             max_pixels=self.config.data.max_pixels,
             img_dir=self.config.data.img_dir,
             use_task=self.config.data.val_use_task,
+            use_history=self.config.data.use_history,
+            history_num=self.config.data.history_num,
         )
         self.val_dataloader = StatefulDataLoader(
             dataset=self.val_dataset,

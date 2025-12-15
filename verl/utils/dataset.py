@@ -36,6 +36,8 @@ import pdb
 from omegaconf import OmegaConf
 from verl.utils.tokenizer import get_processor, get_tokenizer
 
+import re
+
 
 def load_json(path: str) -> Any:
     with open(path, "r", encoding="utf-8") as f:
@@ -80,6 +82,36 @@ def process_image(image: Union[Dict[str, Any], ImageObject], max_pixels: int, mi
 
     return image
 
+
+def get_value(step_repr):
+    pattern = r'\]\s+(.*?)\s+->'
+    match = re.search(pattern, step_repr)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def get_answer(sample, step, step_repr):
+    image = sample['img_url']
+    image_size = sample['img_size']
+    task = sample['task']
+
+    action_type = step['operation']['op']
+    if action_type != 'TYPE':
+        element = get_value(step_repr)
+    else:
+        element = step['operation']['value']
+    bbox = step['bbox']
+    point_x = bbox["x"] + (bbox["width"] / 2)
+    point_y = bbox["y"] + (bbox["height"] / 2)
+    click_point = [point_x / image_size[0], point_y / image_size[1]]
+    click_point = [round(item, 2) for item in click_point]
+    
+    action_type = action_type.lower() # 转换为小写
+    
+    # answer = {'action': action_type, 'value': element, 'position': click_point}
+    answer = {'action': action_type, 'point': click_point, 'input_text': element,}
+    return answer
 
 class RLHFDataset(Dataset):
     """
@@ -233,6 +265,7 @@ class Mind2WebDataset(Dataset):
         use_history: bool = False,
         img_dir: str = None,
         use_task: bool = True,
+        history_num: int = 0
     ):
         self.tokenizer = tokenizer
         self.processor = processor
@@ -250,9 +283,49 @@ class Mind2WebDataset(Dataset):
         self.image_dir = img_dir
         self.use_history = use_history
         self.use_task = use_task
+        self.history_num = history_num
         
     def __len__(self):
         return len(self.dataset)
+    
+    def get_history_qwen(self, image_list, sample, num_history, interleaved_history='tttt', decay_factor=1):
+        # last one is the current image, past are the history
+        # curr_image = image_list[-1]
+        # curr_dict = [{'type': 'image', 'image': curr_image, 'min_pixels': self.min_pixels, 'max_pixels': self.max_pixels}]
+        if num_history == 0 or sample['step_history'] == []:
+            # assert len(image_list) == 1
+            # return curr_dict
+            return []
+        
+        step_history = sample['step_history']
+        repr_history = sample['repr_history']
+        
+        action_history = []
+        action_prefix = []
+        for i, (step, step_repr) in enumerate(zip(step_history[-num_history:], repr_history[-num_history:])):
+            
+            action = get_answer(sample, step, step_repr)
+            max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))
+            
+            # 注意，下面的 action_prefix 和 action_history 是不同的
+            if interleaved_history == 'vvtt':
+                action_prefix.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+            elif interleaved_history == 'ttvv':
+                action_prefix.append({"type": "text", "text": f'{action}'})
+
+            if interleaved_history in ['tttt', 'vvtt']:
+                action_history.append({"type": "text", "text": f'{action}'})
+            elif interleaved_history in ['vvvv', 'ttvv']:
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+            elif interleaved_history == 'vtvt':
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_history.append({"type": "text", "text": f'{action}'})
+            elif interleaved_history == 'tvtv':
+                action_history.append({"type": "text", "text": f'{action}'})
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+        # tmp = action_prefix + action_history + curr_dict
+        tmp = action_prefix + action_history
+        return tmp
     
     def __getitem__(self, index):
         
@@ -272,11 +345,27 @@ class Mind2WebDataset(Dataset):
         else:
             text = "click any clickable area on the page, such as a button, but not a blank space"
             
-        
-        if self.use_history:
-            raise NotImplementedError
+        if self.history_num > 0 and self.use_history:
+            
+            history = self.get_history_qwen(
+                image_list = None, 
+                sample = row_dict, 
+                num_history = self.history_num, 
+                interleaved_history='tttt')
+            
+            # 将 history 从 list 变成 str
+            history_str = ""
+            if history is None or len(history) == 0:
+                history_str = "no history"
+            else:
+                for item in history:
+                    if item['type'] == 'text':
+                        history_str += item['text'] + " "
+            
+            # print("history_str:", history_str)
+              
             prompt_str = (
-                f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}', with the action history being '{history}'.\n"
+                f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{history_str}', with the action history being '{history}'.\n"
                 "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
                 "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
                 "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
@@ -379,12 +468,21 @@ class Mind2WebDataset(Dataset):
 
 if __name__ == "__main__": 
     
-    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config.yaml"
+    # h100
+    # config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config.yaml"
+    # config = OmegaConf.load(config_path)
+    # config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # config.data.system_prompt = """"""
+    # mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
+    # mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    
+    # 103
+    config_path =  "/home/fsq/gui_agent/GUI-R1-Evol-2/examples/config_mind2web_4090.yaml"
     config = OmegaConf.load(config_path)
-    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    config.worker.actor.model.model_path = "/mnt/Shared_06_disk1/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3"
     config.data.system_prompt = """"""
-    mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
-    mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    mind2web_train_path = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_train.json"
+    mind2web_image_dir = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/images/"
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(
@@ -401,7 +499,7 @@ if __name__ == "__main__":
     
     train_dataset = Mind2WebDataset(
         data_path=mind2web_train_path,
-        image_dir=mind2web_image_dir,
+        img_dir=mind2web_image_dir,
         tokenizer=tokenizer,
         processor=processor,
         prompt_key=config.data.prompt_key,
@@ -412,12 +510,12 @@ if __name__ == "__main__":
         system_prompt=config.data.system_prompt,
         min_pixels=config.data.min_pixels,
         max_pixels=config.data.max_pixels,
-        use_history=False
+        use_history=True,
+        history_num=4,
     )
     
-    import pdb
-    pdb.set_trace()
-    
+    for i in range(len(train_dataset)):
+        data_item = train_dataset[i]
     
     '''
     # RLHFDataset
