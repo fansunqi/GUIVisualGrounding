@@ -153,7 +153,21 @@ def r1gui_accuracy_reward(predict_str: str, ground_truth: str) -> float:
                 return 0.0
         elif pred_action in ['type', 'select','scroll']:
             if calculate_f1_score(pred_input_text,gt_input_text)>=0.5:
-                return 1.0
+                # return 1.0
+                
+                if len(gt_bbox)==2:
+                    if (pred_bbox[0]-gt_bbox[0])**2+(pred_bbox[1]-gt_bbox[1])**2<140**2:
+                        return 1.0
+                    else:
+                        return 0.0
+                elif len(gt_bbox)==4:
+                    if (gt_bbox[0]<pred_bbox[0]<gt_bbox[2]) and (gt_bbox[1]<pred_bbox[1]<gt_bbox[3]):
+                        return 1.0
+                    else:
+                        return 0.0
+                else:
+                    return 0.0
+                
             else:
                 return 0.0
         else:
