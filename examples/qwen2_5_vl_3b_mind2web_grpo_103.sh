@@ -3,7 +3,7 @@ set -x
 EXP_NAME=mind2web_gt_history_grpo_qwen2_5_vl_3b
 MODEL_PATH=/mnt/Shared_06_disk1/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/mnt/Shared_06_disk1/fsq/gui-r1_exp/${EXP_NAME}
-CONFIG_PATH=examples/config_mind2web_103.yaml
+CONFIG_PATH=examples/config_mind2web_4090.yaml
 
 # Create SAVE_PATH directory if it doesn't exist
 mkdir -p "${SAVE_PATH}"
@@ -35,5 +35,5 @@ python3 -m verl.trainer.main \
     data.img_dir=/mnt/Shared_06_disk1/fsq/data/Mind2Web/images \
     data.use_history=true \
     data.history_num=4 \
-    worker.rollout.gpu_memory_utilization=0.6 \
-    worker.actor.micro_batch_size_per_device_for_experience=8
+    worker.actor.micro_batch_size_per_device_for_experience=8 \
+    worker.actor.micro_batch_size_per_device_for_update=2
