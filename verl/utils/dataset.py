@@ -365,7 +365,7 @@ class Mind2WebDataset(Dataset):
             # print("history_str:", history_str)
               
             prompt_str = (
-                f"You are a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{history_str}', with the action history being '{history}'.\n"
+                f"You are a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}', with the action history being '{history_str}'.\n"
                 "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
                 "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
                 "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
@@ -516,6 +516,7 @@ if __name__ == "__main__":
     
     for i in range(len(train_dataset)):
         data_item = train_dataset[i]
+    
     
     '''
     # RLHFDataset
