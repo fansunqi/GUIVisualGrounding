@@ -13,6 +13,10 @@ data:
   max_pixels: 4194304
   min_pixels: 262144
   img_dir: null
+  train_use_task: true
+  val_use_task: true
+  use_history: false
+  history_num: 0
 
 algorithm:
   adv_estimator: grpo
@@ -84,7 +88,7 @@ trainer:
   val_before_train: true
   val_only: false
   val_generations_to_log: 1
-  save_freq: 5  # -1 to disable
+  save_freq: 25  # -1 to disable
   save_limit: -1  # -1 to disable
   save_checkpoint_path: null
   load_checkpoint_path: null
