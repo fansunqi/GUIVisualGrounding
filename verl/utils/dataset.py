@@ -383,7 +383,7 @@ class Mind2WebDataset(Dataset):
                 "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
                 "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
                 "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
-                "[{'action': enum['type', 'select'], 'point': [-100, -100], 'input_text': 'shanghai shopping mall'}]\n"
+                "[{'action': enum['type', 'select'], 'point': [100, 100], 'input_text': 'shanghai shopping mall'}]\n"
             )
         
         messages = [{"role": "user", "content": prompt_str}]
@@ -471,12 +471,12 @@ class Mind2WebDataset(Dataset):
 if __name__ == "__main__": 
     
     # h100
-    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config_mind2web.yaml"
-    config = OmegaConf.load(config_path)
-    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
-    config.data.system_prompt = """"""
-    mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
-    mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    # config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config_mind2web.yaml"
+    # config = OmegaConf.load(config_path)
+    # config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # config.data.system_prompt = """"""
+    # mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
+    # mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
     
     # 103
     # config_path =  "/home/fsq/gui_agent/GUI-R1-Evol-2/examples/config_mind2web_4090.yaml"
@@ -485,6 +485,14 @@ if __name__ == "__main__":
     # config.data.system_prompt = """"""
     # mind2web_train_path = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_train.json"
     # mind2web_image_dir = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/images/"
+    
+    # h20
+    config_path =  "/apdcephfs_private/qy/projects/fsq/GUI-R1-Evol-2/examples/config_mind2web.yaml"
+    config = OmegaConf.load(config_path)
+    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    config.data.system_prompt = """"""
+    mind2web_train_path = "/root/cache/hub/datasets--fansunqi--mind2web_adapted/snapshots/d9fc8ffd5d9e5d82ebfaaa51a2ed35b6874add77/Mind2Web/metadata/hf_train.json"
+    mind2web_image_dir = "/root/cache/hub/datasets--fansunqi--mind2web_adapted/snapshots/d9fc8ffd5d9e5d82ebfaaa51a2ed35b6874add77/Mind2Web/images"
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(
@@ -512,12 +520,13 @@ if __name__ == "__main__":
         system_prompt=config.data.system_prompt,
         min_pixels=config.data.min_pixels,
         max_pixels=config.data.max_pixels,
-        use_history=True,
-        history_num=4,
+        # use_history=True,
+        # history_num=4,
     )
     
     for i in range(len(train_dataset)):
         data_item = train_dataset[i]
+        import pdb; pdb.set_trace()
     
     
     '''

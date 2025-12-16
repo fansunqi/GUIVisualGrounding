@@ -1,6 +1,6 @@
 set -x
 
-EXP_NAME=mind2web_gt_grpo_qwen2_5_vl_3b
+EXP_NAME=mind2web_gt_history_fix_norm_grpo_qwen2_5_vl_3b_h20
 MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_h20.yaml
@@ -36,5 +36,8 @@ python3 -m verl.trainer.main \
     data.max_prompt_length=2048 \
     data.max_response_length=1024 \
     data.val_batch_size=1024 \
-    trainer.save_freq=50
+    trainer.save_freq=50 \
+    data.use_history=true \
+    data.history_num=4
+
     
