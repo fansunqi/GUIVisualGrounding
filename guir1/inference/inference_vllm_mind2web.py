@@ -89,17 +89,93 @@ def process_image(image: Union[Dict[str, Any], ImageObject], max_pixels: int, mi
 
 
 
+def get_value(step_repr):
+    pattern = r'\]\s+(.*?)\s+->'
+    match = re.search(pattern, step_repr)
+    if match:
+        return match.group(1)
+    else:
+        return None
+    
+
+def get_answer(sample, step, step_repr):
+    image = sample['img_url']
+    image_size = sample['img_size']
+    task = sample['task']
+
+    action_type = step['operation']['op']
+    if action_type != 'TYPE':
+        element = get_value(step_repr)
+    else:
+        element = step['operation']['value']
+    bbox = step['bbox']
+    point_x = bbox["x"] + (bbox["width"] / 2)
+    point_y = bbox["y"] + (bbox["height"] / 2)
+    # click_point = [point_x / image_size[0], point_y / image_size[1]]
+    # click_point = [round(item, 2) for item in click_point]
+    click_point = [point_x, point_y]
+    click_point = [int(item) for item in click_point]
+    
+    action_type = action_type.lower() # 转换为小写
+    
+    # answer = {'action': action_type, 'value': element, 'position': click_point}
+    answer = {'action': action_type, 'point': click_point, 'input_text': element,}
+    return answer
+
 
 class MultiModalDataset(Dataset):
-    def __init__(self, data, processor, image_dir):
+    def __init__(self, data, processor, args):
         self.data = data
         self.processor = processor
         self.processor.max_pixels=2097152
         self.processor.min_pixels=262144
-        self.image_dir = image_dir
+        self.image_dir = args.image_dir
+        
+        # data history
+        self.use_history = args.use_history
+        self.history_num = args.history_num
 
     def __len__(self):
         return len(self.data)
+    
+    def get_history_qwen(self, image_list, sample, num_history, interleaved_history='tttt', decay_factor=1):
+        # last one is the current image, past are the history
+        # curr_image = image_list[-1]
+        # curr_dict = [{'type': 'image', 'image': curr_image, 'min_pixels': self.min_pixels, 'max_pixels': self.max_pixels}]
+        if num_history == 0 or sample['step_history'] == []:
+            # assert len(image_list) == 1
+            # return curr_dict
+            return []
+        
+        step_history = sample['step_history']
+        repr_history = sample['repr_history']
+        
+        action_history = []
+        action_prefix = []
+        for i, (step, step_repr) in enumerate(zip(step_history[-num_history:], repr_history[-num_history:])):
+            
+            action = get_answer(sample, step, step_repr)
+            # max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))
+            
+            # # 注意，下面的 action_prefix 和 action_history 是不同的
+            # if interleaved_history == 'vvtt':
+            #     action_prefix.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+            # elif interleaved_history == 'ttvv':
+            #     action_prefix.append({"type": "text", "text": f'{action}'})
+
+            if interleaved_history in ['tttt', 'vvtt']:
+                action_history.append({"type": "text", "text": f'{action}'})
+            elif interleaved_history in ['vvvv', 'ttvv']:
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+            elif interleaved_history == 'vtvt':
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_history.append({"type": "text", "text": f'{action}'})
+            elif interleaved_history == 'tvtv':
+                action_history.append({"type": "text", "text": f'{action}'})
+                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+        # tmp = action_prefix + action_history + curr_dict
+        tmp = action_prefix + action_history
+        return tmp
 
     def __getitem__(self, idx):
         """返回单个样本，包含预处理后的数据"""
@@ -112,16 +188,47 @@ class MultiModalDataset(Dataset):
         image=process_image(image_path, self.processor.max_pixels, self.processor.min_pixels)
 
         # sys_prompt='''A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> nd <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>'''
-        text = (
-            f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{task}' on the current screenshot.\n"
-            "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
-            "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
-            "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
-            "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
-            "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
-            "[{'action': enum['type', 'select'], 'point': [100, 100], 'input_text': 'shanghai shopping mall'}]\n"
-        )
-        text = '<image>\n' + text
+        if self.history_num > 0 and self.use_history:
+            
+            history = self.get_history_qwen(
+                image_list = None, 
+                sample = sample, 
+                num_history = self.history_num, 
+                interleaved_history='tttt')
+            
+            # 将 history 从 list 变成 str
+            history_str = ""
+            if history is None or len(history) == 0:
+                history_str = "no history"
+            else:
+                for item in history:
+                    if item['type'] == 'text':
+                        history_str += item['text'] + " "
+            
+            # print("history_str:", history_str)
+            text = (
+                f"You are a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{task}', with the action history being '{history_str}'.\n"
+                "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
+                "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
+                "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
+                "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
+                "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
+                "[{'action': enum['type', 'select'], 'point': [100, 100], 'input_text': 'shanghai shopping mall'}]\n"
+            )
+        else:
+            text = (
+                f"You are a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{task}' on the current screenshot.\n"
+                "Please provide the action to perform (enumerate from ['click', 'type', 'select']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
+                "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
+                "<think> ... </think> <answer>[{'action': enum[ 'click', 'type', 'select'], 'point': [x, y], 'input_text': 'no input text'}]</answer>\n"
+                "Note:\n specific input text (no default) is necessary for actions enum['type', 'select'] \n Example:\n"
+                "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
+                "[{'action': enum['type', 'select'], 'point': [100, 100], 'input_text': 'shanghai shopping mall'}]\n"
+            )
+        
+        # NOTE 有点没懂下面这一行
+        # text = '<image>\n' + text
+        
         message = [
             # {"role":"system", "content": sys_prompt},
             {
@@ -140,8 +247,9 @@ class MultiModalDataset(Dataset):
             add_generation_prompt=True,
         )
 
-        # prompt.replace("<|vision_start|><|image_pad|><|vision_end|>","")
-        # prompt.replace("<image>","<|vision_start|><|image_pad|><|vision_end|>")
+        # NOTE 为什么下面这几行不需要
+        prompt = prompt.replace("<|vision_start|><|image_pad|><|vision_end|>","")
+        prompt = prompt.replace("<image>","<|vision_start|><|image_pad|><|vision_end|>")
 
         image_inputs, video_inputs, video_kwargs = process_vision_info(message, return_video_kwargs=True)
 
@@ -291,7 +399,7 @@ def main(args):
     # 使用 PyTorch Dataset 和 DataLoader
     futures = []
     for i, chunk in enumerate(data_chunks):
-        dataset = MultiModalDataset(chunk, processor, args.image_dir)
+        dataset = MultiModalDataset(chunk, processor, args)
         dataloader = DataLoader(dataset, batch_size=MICRO_BATCH, shuffle=False, num_workers=4, collate_fn=custom_collate_fn)
         futures.append(workers[i].process_data.remote(dataloader))
 
@@ -313,5 +421,10 @@ if __name__ == "__main__":
     parser.add_argument('--output_name', type=str, default="<output_name>")
     parser.add_argument('--output_path', type=str, default='./outputs')
     parser.add_argument('--num_actor', type=int, default=8)
+    
+    # for prompt history
+    parser.add_argument('--use_history', action='store_true', default=False, help='Whether to use history, default is False')
+    parser.add_argument('--history_num', type=int, default=0)
+    
     args = parser.parse_args()
     main(args)

@@ -1,7 +1,10 @@
-# python inference/inference_vllm_mind2web.py \
-#     --model_path /data/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3 \
-#     --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_domain.json \
-#     --output_name qwen_2_5_vl_3b
+python inference/inference_vllm_mind2web.py \
+    --model_path /data/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3 \
+    --data_path /data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
+    --output_name test \
+    --num_actor 1 \
+    --use_history \
+    --history_num 4 \
 
 # export TORCH_COMPILE_CACHE=/data/fsq/vllm_cache
 # python inference/inference_vllm_mind2web.py \
@@ -39,7 +42,7 @@
 #     --output_name ui_tars_1_5_7b_only_point \
 #     --num_actor 6
 
-python inference/inference_vllm_screenspot_only_point.py \
-    --model_path /mnt/Shared_06_disk1/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-1.5-7B/snapshots/683d002dd99d8f95104d31e70391a39348857f4e \
-    --data_path /mnt/Shared_06_disk1/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/screenspot_pro_test.parquet \
-    --num_actor 7
+# python inference/inference_vllm_screenspot_only_point.py \
+#     --model_path /mnt/Shared_06_disk1/fsq/hf_home/hub/models--ByteDance-Seed--UI-TARS-1.5-7B/snapshots/683d002dd99d8f95104d31e70391a39348857f4e \
+#     --data_path /mnt/Shared_06_disk1/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/screenspot_pro_test.parquet \
+#     --num_actor 7

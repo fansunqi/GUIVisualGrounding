@@ -1,12 +1,12 @@
 set -x
 
-EXP_NAME=mind2web_gt_history_r1gui_v2_grpo_qwen2_5_vl_3b
+EXP_NAME=mind2web_gt_history_fix_norm_grpo_qwen2_5_vl_3b
 
-# MODEL_PATH=/data/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
-# SAVE_PATH=/data/fsq/GUI-R1_exp/${EXP_NAME}
+MODEL_PATH=/data/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
+SAVE_PATH=/data/fsq/GUI-R1_exp/${EXP_NAME}
 
-MODEL_PATH=/home/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
-SAVE_PATH=/home/fsq/exp/${EXP_NAME}
+# MODEL_PATH=/home/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
+# SAVE_PATH=/home/fsq/exp/${EXP_NAME}
 
 CONFIG_PATH=examples/config_mind2web.yaml
 
@@ -21,30 +21,11 @@ cp "${CONFIG_PATH}" "${SAVE_PATH}/$(basename "${CONFIG_PATH}")"
 
 SYSTEM_PROMPT=""""""
 
-# python3 -m verl.trainer.main \
-#     config=${CONFIG_PATH} \
-#     data.train_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json \
-#     data.val_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
-#     data.img_dir=/data/fsq/gui_agent_data/Mind2Web/images \
-#     data.system_prompt="${SYSTEM_PROMPT}" \
-#     worker.actor.model.model_path=${MODEL_PATH} \
-#     worker.rollout.tensor_parallel_size=1 \
-#     worker.rollout.enable_chunked_prefill=false \
-#     worker.reward.compute_score=r1gui \
-#     trainer.experiment_name=${EXP_NAME} \
-#     trainer.n_gpus_per_node=8 \
-#     trainer.save_checkpoint_path=${SAVE_PATH} \
-#     data.max_pixels=1258291 \
-#     data.max_prompt_length=2048 \
-#     data.max_response_length=1024 \
-#     data.val_batch_size=2048 \
-
-
 python3 -m verl.trainer.main \
     config=${CONFIG_PATH} \
-    data.train_files=/home/fsq/data/Mind2Web/metadata/hf_train.json \
-    data.val_files=/home/fsq/data/Mind2Web/metadata/hf_test_task.json \
-    data.img_dir=/home/fsq/data/Mind2Web/images \
+    data.train_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json \
+    data.val_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
+    data.img_dir=/data/fsq/gui_agent_data/Mind2Web/images \
     data.system_prompt="${SYSTEM_PROMPT}" \
     worker.actor.model.model_path=${MODEL_PATH} \
     worker.rollout.tensor_parallel_size=1 \
@@ -56,9 +37,28 @@ python3 -m verl.trainer.main \
     data.max_pixels=1258291 \
     data.max_prompt_length=2048 \
     data.max_response_length=1024 \
-    data.val_batch_size=1024 \
+    data.val_batch_size=2048 \
+    trainer.save_freq=50 \
     data.use_history=true \
-    data.history_num=4 \
-    trainer.load_checkpoint_path=/home/fsq/exp/mind2web_gt_history_r1gui_v2_grpo_qwen2_5_vl_3b/global_step_50
+    data.history_num=4
+# 直接用在 home 中的数据
+# python3 -m verl.trainer.main \
+#     config=${CONFIG_PATH} \
+#     data.train_files=/home/fsq/data/Mind2Web/metadata/hf_train.json \
+#     data.val_files=/home/fsq/data/Mind2Web/metadata/hf_test_task.json \
+#     data.img_dir=/home/fsq/data/Mind2Web/images \
+#     data.system_prompt="${SYSTEM_PROMPT}" \
+#     worker.actor.model.model_path=${MODEL_PATH} \
+#     worker.rollout.tensor_parallel_size=1 \
+#     worker.rollout.enable_chunked_prefill=false \
+#     worker.reward.compute_score=r1gui \
+#     trainer.experiment_name=${EXP_NAME} \
+#     trainer.n_gpus_per_node=8 \
+#     trainer.save_checkpoint_path=${SAVE_PATH} \
+#     data.max_pixels=1258291 \
+#     data.max_prompt_length=2048 \
+#     data.max_response_length=1024 \
+#     data.val_batch_size=1024 \
+#     trainer.save_freq=400
 
     

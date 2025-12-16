@@ -104,8 +104,10 @@ def get_answer(sample, step, step_repr):
     bbox = step['bbox']
     point_x = bbox["x"] + (bbox["width"] / 2)
     point_y = bbox["y"] + (bbox["height"] / 2)
-    click_point = [point_x / image_size[0], point_y / image_size[1]]
-    click_point = [round(item, 2) for item in click_point]
+    # click_point = [point_x / image_size[0], point_y / image_size[1]]
+    # click_point = [round(item, 2) for item in click_point]
+    click_point = [point_x, point_y]
+    click_point = [int(item) for item in click_point]
     
     action_type = action_type.lower() # 转换为小写
     
@@ -421,7 +423,7 @@ class Mind2WebDataset(Dataset):
         #     messages.insert(0, {"role": "system", "content": self.system_prompt})
 
         prompt = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
-
+ 
         # if self.image_key in row_dict:
         prompt = prompt.replace("<image>", "<|vision_start|><|image_pad|><|vision_end|>")
         row_dict["multi_modal_data"] = {
@@ -469,20 +471,20 @@ class Mind2WebDataset(Dataset):
 if __name__ == "__main__": 
     
     # h100
-    # config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config.yaml"
-    # config = OmegaConf.load(config_path)
-    # config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
-    # config.data.system_prompt = """"""
-    # mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
-    # mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config_mind2web.yaml"
+    config = OmegaConf.load(config_path)
+    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    config.data.system_prompt = """"""
+    mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
+    mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
     
     # 103
-    config_path =  "/home/fsq/gui_agent/GUI-R1-Evol-2/examples/config_mind2web_4090.yaml"
-    config = OmegaConf.load(config_path)
-    config.worker.actor.model.model_path = "/mnt/Shared_06_disk1/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3"
-    config.data.system_prompt = """"""
-    mind2web_train_path = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_train.json"
-    mind2web_image_dir = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/images/"
+    # config_path =  "/home/fsq/gui_agent/GUI-R1-Evol-2/examples/config_mind2web_4090.yaml"
+    # config = OmegaConf.load(config_path)
+    # config.worker.actor.model.model_path = "/mnt/Shared_06_disk1/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3"
+    # config.data.system_prompt = """"""
+    # mind2web_train_path = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/metadata/hf_train.json"
+    # mind2web_image_dir = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/images/"
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(

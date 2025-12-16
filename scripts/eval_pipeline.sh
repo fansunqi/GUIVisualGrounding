@@ -35,7 +35,7 @@ for ckpt_num in "${ckpt_numbers[@]}"; do
         --data_path ${DATA_DIR}/metadata/hf_test_full.json \
         --image_dir ${DATA_DIR}/images \
         --output_name ${SAVE_NAME}_global_step_$ckpt_num \
-        --num_actor 8
+        --num_actor 2
     python eval/eval_mind2web_point.py \
         --pred_path $OUTPUT_DIR/${SAVE_NAME}_global_step_$ckpt_num/hf_test_full.json
     python eval/eval_mind2web_reformat.py \
