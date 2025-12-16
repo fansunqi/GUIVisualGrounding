@@ -2,12 +2,12 @@
 set -x
 cd /home/fsq/gui_agent/GUI-R1-Evol-2/scripts/
 
-SAVE_NAME=mind2web_ws_no_task_grpo_qwen2_5_vl_3b
+SAVE_NAME=mind2web_gt_grpo_qwen2_5_vl_3b_105
 
 # export TORCH_COMPILE_CACHE=/mnt/Shared_06_disk1/fsq/vllm_cache
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(100 150 200)
+ckpt_numbers=(570)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
 
@@ -34,7 +34,8 @@ for ckpt_num in "${ckpt_numbers[@]}"; do
         --output_name ${SAVE_NAME}_global_step_$ckpt_num \
         --num_actor 2
     python eval/eval_mind2web_point.py \
-        --pred_path $OUTPUT_DIR/${SAVE_NAME}_global_step_$ckpt_num/hf_test_full.json
+        --pred_path $OUTPUT_DIR/${SAVE_NAME}_global_step_$ckpt_num/hf_test_full.json \
+        --gt_path /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/metadata/hf_test_full.json
     python eval/eval_mind2web_reformat.py \
         --pred_path $OUTPUT_DIR/${SAVE_NAME}_global_step_$ckpt_num/hf_test_full.json \
         --gt_path /mnt/Shared_05_disk/fsq/gui_agent_data/Mind2Web/metadata/hf_test_full.json

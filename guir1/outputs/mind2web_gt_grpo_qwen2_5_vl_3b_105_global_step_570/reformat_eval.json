@@ -1,44 +1,44 @@
 {
     "test_task": {
-        "Operation F1": 0.5409028378717823,
-        "Element Accuracy": 0.5403846153846154,
-        "Step Success": 0.5048076923076923,
-        "Episode Success": 0.5048076923076923,
+        "Operation F1": 0.5372889700241711,
+        "Element Accuracy": 0.5466346153846153,
+        "Step Success": 0.5057692307692307,
+        "Episode Success": 0.5057692307692307,
         "Operation F1 categories": [
-            0.9509582863585119,
-            0.6717502272568352,
+            0.9487034949267192,
+            0.6631634151457939,
             0.0
         ],
-        "Macro Element Accuracy": 0.5403846153846154,
-        "Macro Operation F1": 0.8843688949938949,
-        "Macro Step Success Rate": 0.5048076923076923
+        "Macro Element Accuracy": 0.5466346153846153,
+        "Macro Operation F1": 0.8815086996336996,
+        "Macro Step Success Rate": 0.5057692307692307
     },
     "test_domain": {
-        "Operation F1": 0.5080714768625909,
-        "Element Accuracy": 0.5465016331442324,
-        "Step Success": 0.5024926938284339,
-        "Episode Success": 0.5024926938284339,
+        "Operation F1": 0.5090407175664087,
+        "Element Accuracy": 0.5468454529826371,
+        "Step Success": 0.5057589822932783,
+        "Episode Success": 0.5057589822932783,
         "Operation F1 categories": [
-            0.9354200763775233,
-            0.5887943542102495,
+            0.9369203491543916,
+            0.5902018035448344,
             0.0
         ],
-        "Macro Element Accuracy": 0.5465016331442324,
-        "Macro Operation F1": 0.8666002474273152,
-        "Macro Step Success Rate": 0.5024926938284339
+        "Macro Element Accuracy": 0.5468454529826371,
+        "Macro Operation F1": 0.8680535159512385,
+        "Macro Step Success Rate": 0.5057589822932783
     },
     "test_website": {
-        "Operation F1": 0.5173441615952717,
-        "Element Accuracy": 0.5587162654996353,
-        "Step Success": 0.4974471188913202,
-        "Episode Success": 0.4974471188913202,
+        "Operation F1": 0.5243596826026055,
+        "Element Accuracy": 0.5638220277169949,
+        "Step Success": 0.5025528811086798,
+        "Episode Success": 0.5025528811086798,
         "Operation F1 categories": [
-            0.9626334519572953,
-            0.5893990328285199,
+            0.9688612099644128,
+            0.6042178378434033,
             0.0
         ],
-        "Macro Element Accuracy": 0.5587162654996353,
-        "Macro Operation F1": 0.856270057710612,
-        "Macro Step Success Rate": 0.4974471188913202
+        "Macro Element Accuracy": 0.5638220277169949,
+        "Macro Operation F1": 0.8630619859252887,
+        "Macro Step Success Rate": 0.5025528811086798
     }
 }

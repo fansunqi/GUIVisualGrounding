@@ -2,7 +2,7 @@ set -x
 
 EXP_NAME=mind2web_gt_history_grpo_qwen2_5_vl_3b_105
 MODEL_PATH=/mnt/Shared_05_disk/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
-SAVE_PATH=/mnt/Shared_05_disk/fsq/gui_agent_exp/gui-r1/mind2web_gt_grpo_qwen2_5_vl_3b_105
+SAVE_PATH=/mnt/Shared_05_disk/fsq/gui_agent_exp/gui-r1/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_4090.yaml
 
 # Create SAVE_PATH directory if it doesn't exist
