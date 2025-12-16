@@ -67,8 +67,10 @@ class MlflowLogger(Logger):
 
 class TensorBoardLogger(Logger):
     def __init__(self, config: Dict[str, Any]) -> None:
-        # tensorboard_dir = os.getenv("TENSORBOARD_DIR", "tensorboard_log")
-        tensorboard_dir = os.path.join(config["trainer"]["save_checkpoint_path"], "runs")
+        
+        tensorboard_dir_default = os.path.join(config["trainer"]["save_checkpoint_path"], "runs")
+        tensorboard_dir = os.getenv("TENSORBOARD_DIR", tensorboard_dir_default)
+        
         if not os.path.exists(tensorboard_dir):
             os.makedirs(tensorboard_dir)
         os.makedirs(tensorboard_dir, exist_ok=True)

@@ -86,6 +86,7 @@ class TrainerConfig:
     save_limit: int = -1
     save_checkpoint_path: Optional[str] = None
     load_checkpoint_path: Optional[str] = None
+    ray_init_num_cpus: Optional[int] = None
 
     def post_init(self):
         if self.save_checkpoint_path is None:
