@@ -423,7 +423,9 @@ class Mind2WebDataset(Dataset):
         #     messages.insert(0, {"role": "system", "content": self.system_prompt})
 
         prompt = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
- 
+
+        import pdb; pdb.set_trace()
+        
         # if self.image_key in row_dict:
         prompt = prompt.replace("<image>", "<|vision_start|><|image_pad|><|vision_end|>")
         row_dict["multi_modal_data"] = {
@@ -491,8 +493,9 @@ if __name__ == "__main__":
     config = OmegaConf.load(config_path)
     config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
     config.data.system_prompt = """"""
-    mind2web_train_path = "/root/cache/hub/datasets--fansunqi--mind2web_adapted/snapshots/d9fc8ffd5d9e5d82ebfaaa51a2ed35b6874add77/Mind2Web/metadata/hf_train.json"
-    mind2web_image_dir = "/root/cache/hub/datasets--fansunqi--mind2web_adapted/snapshots/d9fc8ffd5d9e5d82ebfaaa51a2ed35b6874add77/Mind2Web/images"
+    data_dir = "/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b"
+    mind2web_train_path = os.path.join(data_dir, "metadata/hf_train.json")
+    mind2web_image_dir = os.path.join(data_dir, "images")
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(

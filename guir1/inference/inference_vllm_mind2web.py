@@ -19,8 +19,19 @@ from io import BytesIO
 from PIL.Image import Image as ImageObject
 from typing import Any, Dict, List, Optional, Union
 
+
 # 初始化 Ray
-ray.init()
+# 从环境变量中获取ray_init_num_cpus
+ray_init_num_cpus = os.getenv("ray_init_num_cpus")
+
+if ray_init_num_cpus is not None:
+    # 如果环境变量存在，转换为整数并初始化Ray
+    ray.init(num_cpus=int(ray_init_num_cpus))
+    print("Initialized Ray with num_cpus =", ray_init_num_cpus)
+else:
+    # 如果环境变量不存在，使用默认方式初始化Ray
+    ray.init()
+    print("Initialized Ray with default settings")
 
 # 模型路径
 MODEL_PATH = ""
