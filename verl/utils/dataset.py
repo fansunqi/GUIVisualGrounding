@@ -424,7 +424,7 @@ class Mind2WebDataset(Dataset):
 
         prompt = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         
         # if self.image_key in row_dict:
         prompt = prompt.replace("<image>", "<|vision_start|><|image_pad|><|vision_end|>")
