@@ -4,7 +4,7 @@ cd /home/fsq/gui_agent/GUI-R1/scripts/
 
 EXP_DIR=/data/fsq/GUI-R1_exp
 DATA_DIR=/data/fsq/gui_agent_data/Mind2Web
-SAVE_NAME=mind2web_gt_history_fix_norm_grpo_qwen2_5_vl_3b
+SAVE_NAME=mind2web_train_new_gt_history_fix_norm_grpo_qwen2_5_vl_3b_h100
 
 export TORCH_COMPILE_CACHE=/home/fsq/vllm_cache
 export TORCHINDUCTOR_CACHE_DIR=/home/fsq/torchinductor_cache
@@ -12,7 +12,7 @@ mkdir -p $TORCHINDUCTOR_CACHE_DIR
 chmod -R 777 $TORCHINDUCTOR_CACHE_DIR
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(650)
+ckpt_numbers=(800)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    

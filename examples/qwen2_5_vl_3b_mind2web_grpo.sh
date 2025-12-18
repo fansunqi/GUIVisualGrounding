@@ -1,6 +1,6 @@
 set -x
 
-EXP_NAME=mind2web_gt_history_fix_norm_grpo_qwen2_5_vl_3b
+EXP_NAME=mind2web_train_new_gt_history_fix_norm_grpo_qwen2_5_vl_3b_h100
 
 MODEL_PATH=/data/fsq/hf_home/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/data/fsq/GUI-R1_exp/${EXP_NAME}
@@ -23,7 +23,7 @@ SYSTEM_PROMPT=""""""
 
 python3 -m verl.trainer.main \
     config=${CONFIG_PATH} \
-    data.train_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json \
+    data.train_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train_new.json \
     data.val_files=/data/fsq/gui_agent_data/Mind2Web/metadata/hf_test_task.json \
     data.img_dir=/data/fsq/gui_agent_data/Mind2Web/images \
     data.system_prompt="${SYSTEM_PROMPT}" \
