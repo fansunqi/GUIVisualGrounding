@@ -121,7 +121,7 @@ def r1ws_format_reward(predict_str: str) -> float:
     except:
         return 0.0
 
-def r1ws_accuracy_reward(predict_str: str, ground_truth: str) -> float:
+def r1ws_v2_accuracy_reward(predict_str: str, ground_truth: str) -> float:
     """
     比较 predict_str 和 ground_truth 中的动作和参数是否一致。
     """
@@ -201,9 +201,9 @@ def r1ws_accuracy_reward(predict_str: str, ground_truth: str) -> float:
     except Exception as e:
         return 0.0
     
-def r1ws_compute_score(predict_str: str, ground_truth: str):
+def r1ws_v2_compute_score(predict_str: str, ground_truth: str):
     format = r1ws_format_reward(predict_str)
-    accuracy = r1ws_accuracy_reward(predict_str, ground_truth)
+    accuracy = r1ws_v2_accuracy_reward(predict_str, ground_truth)
     return {
         "overall": 0.8 * accuracy + 0.2 * format,
         "format": format,

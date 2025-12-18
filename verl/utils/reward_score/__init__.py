@@ -19,5 +19,7 @@ from .r1gui import r1gui_compute_score
 from .r1ws import r1ws_compute_score
 from .r1gui_v2 import r1gui_v2_compute_score
 from .r1gui_org import r1gui_org_compute_score
+from .r1ws_v2 import r1ws_v2_compute_score
 
-__all__ = ["math_compute_score", "r1v_compute_score","r1gui_compute_score", "r1ws_compute_score", "r1gui_v2_compute_score"]
+__all__ = ["math_compute_score", "r1v_compute_score","r1gui_compute_score", "r1ws_compute_score", "r1gui_v2_compute_score",
+           "r1gui_org_compute_score", "r1ws_v2_compute_score"]
