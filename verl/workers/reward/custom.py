@@ -42,6 +42,8 @@ class CustomRewardManager:
             self.compute_score: Callable[[str, str], RewardScore] = r1ws_compute_score
         elif compute_score == "r1gui_v2":
             self.compute_score: Callable[[str, str], RewardScore] = r1gui_v2_compute_score
+        elif compute_score == "r1gui_org":
+            self.compute_score: Callable[[str, str], RewardScore] = r1gui_org_compute_score
         else:
             raise NotImplementedError()
 

@@ -85,5 +85,5 @@ trainer:
   val_generations_to_log: 1
   save_freq: 5  # -1 to disable
   save_limit: -1  # -1 to disable
-  save_checkpoint_path: /home/fsq/gui_agent/GUI-R1/ckpt
+  save_checkpoint_path: /data/fsq/GUI-R1_exp/
   load_checkpoint_path: null

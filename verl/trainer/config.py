@@ -52,6 +52,8 @@ class DataConfig:
     val_use_task: bool = True
     use_history: bool = False
     history_num: int = 0
+    train_dataset: str = "mind2web"
+    val_dataset: str = "mind2web"
 
 
 @dataclass

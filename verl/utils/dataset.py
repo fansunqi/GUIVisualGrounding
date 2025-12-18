@@ -195,6 +195,7 @@ class RLHFDataset(Dataset):
                 "[{'action': enum['click'], 'point': [123, 300], 'input_text': 'no input text'}]\n"
             )
         messages = [{"role": "user", "content": prompt_str}]
+        images=[process_image(image, self.max_pixels, self.min_pixels) for image in images]
 
         scalex,scaley=images[0].size
         gt_bbox=row_dict['gt_bbox']

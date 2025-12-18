@@ -257,36 +257,41 @@ class RayPPOTrainer:
         self._create_dataloader()
 
     def _create_dataloader(self) -> None:
-        # self.train_dataset = RLHFDataset(
-        #     data_path=self.config.data.train_files,
-        #     tokenizer=self.tokenizer,
-        #     processor=self.processor,
-        #     prompt_key=self.config.data.prompt_key,
-        #     answer_key=self.config.data.answer_key,
-        #     image_key=self.config.data.image_key,
-        #     max_prompt_length=self.config.data.max_prompt_length,
-        #     truncation="right",
-        #     system_prompt=self.config.data.system_prompt,
-        #     min_pixels=self.config.data.min_pixels,
-        #     max_pixels=self.config.data.max_pixels,
-        # )
-        self.train_dataset = Mind2WebDataset(
-            data_path=self.config.data.train_files,
-            tokenizer=self.tokenizer,
-            processor=self.processor,
-            prompt_key=self.config.data.prompt_key,
-            answer_key=self.config.data.answer_key,
-            image_key=self.config.data.image_key,
-            max_prompt_length=self.config.data.max_prompt_length,
-            truncation="right",
-            system_prompt=self.config.data.system_prompt,
-            min_pixels=self.config.data.min_pixels,
-            max_pixels=self.config.data.max_pixels,
-            img_dir=self.config.data.img_dir,
-            use_task=self.config.data.train_use_task,
-            use_history=self.config.data.use_history,
-            history_num=self.config.data.history_num,
-        )
+        if self.config.data.train_dataset == "rlhf":
+            self.train_dataset = RLHFDataset(
+                data_path=self.config.data.train_files,
+                tokenizer=self.tokenizer,
+                processor=self.processor,
+                prompt_key=self.config.data.prompt_key,
+                answer_key=self.config.data.answer_key,
+                image_key=self.config.data.image_key,
+                max_prompt_length=self.config.data.max_prompt_length,
+                truncation="right",
+                system_prompt=self.config.data.system_prompt,
+                min_pixels=self.config.data.min_pixels,
+                max_pixels=self.config.data.max_pixels,
+            )
+        elif self.config.data.train_dataset == "mind2web":
+            self.train_dataset = Mind2WebDataset(
+                data_path=self.config.data.train_files,
+                tokenizer=self.tokenizer,
+                processor=self.processor,
+                prompt_key=self.config.data.prompt_key,
+                answer_key=self.config.data.answer_key,
+                image_key=self.config.data.image_key,
+                max_prompt_length=self.config.data.max_prompt_length,
+                truncation="right",
+                system_prompt=self.config.data.system_prompt,
+                min_pixels=self.config.data.min_pixels,
+                max_pixels=self.config.data.max_pixels,
+                img_dir=self.config.data.img_dir,
+                use_task=self.config.data.train_use_task,
+                use_history=self.config.data.use_history,
+                history_num=self.config.data.history_num,
+            )
+        else:
+            raise NotImplementedError
+        
         # use sampler for better ckpt resume
         if self.config.data.shuffle:
             train_dataloader_generator = torch.Generator()
@@ -305,36 +310,41 @@ class RayPPOTrainer:
             drop_last=True,
         )
 
-        # self.val_dataset = RLHFDataset(
-        #     data_path=self.config.data.val_files,
-        #     tokenizer=self.tokenizer,
-        #     processor=self.processor,
-        #     prompt_key=self.config.data.prompt_key,
-        #     answer_key=self.config.data.answer_key,
-        #     image_key=self.config.data.image_key,
-        #     max_prompt_length=self.config.data.max_prompt_length,
-        #     truncation="right",
-        #     system_prompt=self.config.data.system_prompt,
-        #     min_pixels=self.config.data.min_pixels,
-        #     max_pixels=self.config.data.max_pixels,
-        # )
-        self.val_dataset = Mind2WebDataset(
-            data_path=self.config.data.val_files,
-            tokenizer=self.tokenizer,
-            processor=self.processor,
-            prompt_key=self.config.data.prompt_key,
-            answer_key=self.config.data.answer_key,
-            image_key=self.config.data.image_key,
-            max_prompt_length=self.config.data.max_prompt_length,
-            truncation="right",
-            system_prompt=self.config.data.system_prompt,
-            min_pixels=self.config.data.min_pixels,
-            max_pixels=self.config.data.max_pixels,
-            img_dir=self.config.data.img_dir,
-            use_task=self.config.data.val_use_task,
-            use_history=self.config.data.use_history,
-            history_num=self.config.data.history_num,
-        )
+        if self.config.data.val_dataset == "rlhf":
+            self.val_dataset = RLHFDataset(
+                data_path=self.config.data.val_files,
+                tokenizer=self.tokenizer,
+                processor=self.processor,
+                prompt_key=self.config.data.prompt_key,
+                answer_key=self.config.data.answer_key,
+                image_key=self.config.data.image_key,
+                max_prompt_length=self.config.data.max_prompt_length,
+                truncation="right",
+                system_prompt=self.config.data.system_prompt,
+                min_pixels=self.config.data.min_pixels,
+                max_pixels=self.config.data.max_pixels,
+            )
+        elif self.config.data.val_dataset == "mind2web":
+            self.val_dataset = Mind2WebDataset(
+                data_path=self.config.data.val_files,
+                tokenizer=self.tokenizer,
+                processor=self.processor,
+                prompt_key=self.config.data.prompt_key,
+                answer_key=self.config.data.answer_key,
+                image_key=self.config.data.image_key,
+                max_prompt_length=self.config.data.max_prompt_length,
+                truncation="right",
+                system_prompt=self.config.data.system_prompt,
+                min_pixels=self.config.data.min_pixels,
+                max_pixels=self.config.data.max_pixels,
+                img_dir=self.config.data.img_dir,
+                use_task=self.config.data.val_use_task,
+                use_history=self.config.data.use_history,
+                history_num=self.config.data.history_num,
+            )
+        else:
+            raise NotImplementedError
+        
         self.val_dataloader = StatefulDataLoader(
             dataset=self.val_dataset,
             batch_size=len(self.val_dataset)
