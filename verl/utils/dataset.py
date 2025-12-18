@@ -267,7 +267,8 @@ class Mind2WebDataset(Dataset):
         use_history: bool = False,
         img_dir: str = None,
         use_task: bool = True,
-        history_num: int = 0
+        history_num: int = 0,
+        interleaved_history: str = 'tttt',
     ):
         self.tokenizer = tokenizer
         self.processor = processor
@@ -286,9 +287,22 @@ class Mind2WebDataset(Dataset):
         self.use_history = use_history
         self.use_task = use_task
         self.history_num = history_num
+        self.interleaved_history = interleaved_history
         
     def __len__(self):
         return len(self.dataset)
+    
+    def append_history_image(self, sample, num_history, image_list, url_only=False):
+        if num_history == 0:
+            return image_list
+        step_history = sample['step_history']
+        for i, step in enumerate(step_history[-num_history:], start=1):
+            image_path = os.path.join(self.image_dir, step["img_url"])
+            if url_only:
+                image_list.append(image_path)
+            else:
+                image_list.append(Image.open(image_path).convert("RGB"))
+        return image_list
     
     def get_history_qwen(self, image_list, sample, num_history, interleaved_history='tttt', decay_factor=1):
         # last one is the current image, past are the history
@@ -311,20 +325,20 @@ class Mind2WebDataset(Dataset):
             
             # 注意，下面的 action_prefix 和 action_history 是不同的
             if interleaved_history == 'vvtt':
-                action_prefix.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_prefix.append({"type": "image", "image": image_list[i+1], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
             elif interleaved_history == 'ttvv':
                 action_prefix.append({"type": "text", "text": f'{action}'})
 
             if interleaved_history in ['tttt', 'vvtt']:
                 action_history.append({"type": "text", "text": f'{action}'})
             elif interleaved_history in ['vvvv', 'ttvv']:
-                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_history.append({"type": "image", "image": image_list[i+1], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
             elif interleaved_history == 'vtvt':
-                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_history.append({"type": "image", "image": image_list[i+1], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
                 action_history.append({"type": "text", "text": f'{action}'})
             elif interleaved_history == 'tvtv':
                 action_history.append({"type": "text", "text": f'{action}'})
-                action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
+                action_history.append({"type": "image", "image": image_list[i+1], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
         # tmp = action_prefix + action_history + curr_dict
         tmp = action_prefix + action_history
         return tmp
@@ -346,14 +360,22 @@ class Mind2WebDataset(Dataset):
             text = row_dict['task']
         else:
             text = "click any clickable area on the page, such as a button, but not a blank space"
-            
+        
+        image_url = row_dict["img_url"]
+        image_path = os.path.join(self.image_dir, image_url)
+        image_list = [image_path]
+          
         if self.history_num > 0 and self.use_history:
             
+            # 首先需要得到一个 image_list
+            if self.interleaved_history in ['vvvv', 'vvtt', 'ttvv', 'vtvt', 'tvtv']:
+                image_list = self.append_history_image(row_dict, self.history_num, image_list, url_only=True)
+            
             history = self.get_history_qwen(
-                image_list = None, 
+                image_list = image_list, 
                 sample = row_dict, 
                 num_history = self.history_num, 
-                interleaved_history='tttt')
+                interleaved_history=self.interleaved_history)
             
             # 将 history 从 list 变成 str
             history_str = ""
@@ -363,7 +385,10 @@ class Mind2WebDataset(Dataset):
                 for item in history:
                     if item['type'] == 'text':
                         history_str += item['text'] + " "
+                    if item['type'] == 'image':
+                        history_str += "<image>" + " "
             
+            # import pdb; pdb.set_trace()
             # print("history_str:", history_str)
               
             prompt_str = (
@@ -387,10 +412,7 @@ class Mind2WebDataset(Dataset):
             )
         
         messages = [{"role": "user", "content": prompt_str}]
-        
-        image_url = row_dict["img_url"]
-        image_path = os.path.join(self.image_dir, image_url)
-        images=[process_image(image_path, self.max_pixels, self.min_pixels)]
+        images=[process_image(image_path, self.max_pixels, self.min_pixels) for image_path in image_list] 
         
         bbox = row_dict["step"]["bbox"]
         
@@ -473,12 +495,12 @@ class Mind2WebDataset(Dataset):
 if __name__ == "__main__": 
     
     # h100
-    # config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config_mind2web.yaml"
-    # config = OmegaConf.load(config_path)
-    # config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
-    # config.data.system_prompt = """"""
-    # mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train.json"
-    # mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
+    config_path =  "/home/fsq/gui_agent/GUI-R1/examples/config_mind2web.yaml"
+    config = OmegaConf.load(config_path)
+    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    config.data.system_prompt = """"""
+    mind2web_train_path = "/data/fsq/gui_agent_data/Mind2Web/metadata/hf_train_history_image.json"
+    mind2web_image_dir = "/data/fsq/gui_agent_data/Mind2Web/images/"
     
     # 103
     # config_path =  "/home/fsq/gui_agent/GUI-R1-Evol-2/examples/config_mind2web_4090.yaml"
@@ -489,13 +511,13 @@ if __name__ == "__main__":
     # mind2web_image_dir = "/mnt/Shared_06_disk1/fsq/data/Mind2Web/images/"
     
     # h20
-    config_path =  "/apdcephfs_private/qy/projects/fsq/GUI-R1-Evol-2/examples/config_mind2web.yaml"
-    config = OmegaConf.load(config_path)
-    config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
-    config.data.system_prompt = """"""
-    data_dir = "/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b"
-    mind2web_train_path = os.path.join(data_dir, "metadata/hf_train.json")
-    mind2web_image_dir = os.path.join(data_dir, "images")
+    # config_path =  "/apdcephfs_private/qy/projects/fsq/GUI-R1-Evol-2/examples/config_mind2web.yaml"
+    # config = OmegaConf.load(config_path)
+    # config.worker.actor.model.model_path = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # config.data.system_prompt = """"""
+    # data_dir = "/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b"
+    # mind2web_train_path = os.path.join(data_dir, "metadata/hf_train.json")
+    # mind2web_image_dir = os.path.join(data_dir, "images")
     
     # instantiate tokenizer
     tokenizer = get_tokenizer(
@@ -523,8 +545,9 @@ if __name__ == "__main__":
         system_prompt=config.data.system_prompt,
         min_pixels=config.data.min_pixels,
         max_pixels=config.data.max_pixels,
-        # use_history=True,
-        # history_num=4,
+        use_history=True,
+        history_num=4,
+        interleaved_history="tvtv"
     )
     
     for i in range(len(train_dataset)):
