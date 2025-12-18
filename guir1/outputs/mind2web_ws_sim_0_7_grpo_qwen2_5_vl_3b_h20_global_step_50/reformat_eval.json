@@ -1,0 +1,44 @@
+{
+    "test_task": {
+        "Operation F1": 0.34304863694381393,
+        "Element Accuracy": 0.37067307692307694,
+        "Step Success": 0.33125,
+        "Episode Success": 0.33125,
+        "Operation F1 categories": [
+            0.9983089064261556,
+            0.030837004405286344,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.37067307692307694,
+        "Macro Operation F1": 0.8548076923076923,
+        "Macro Step Success Rate": 0.33125
+    },
+    "test_domain": {
+        "Operation F1": 0.343024372897141,
+        "Element Accuracy": 0.3984871927110194,
+        "Step Success": 0.35224342444559054,
+        "Episode Success": 0.35224342444559054,
+        "Operation F1 categories": [
+            0.9950900163666121,
+            0.03398310232481086,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.3984871927110194,
+        "Macro Operation F1": 0.8408201047705948,
+        "Macro Step Success Rate": 0.35224342444559054
+    },
+    "test_website": {
+        "Operation F1": 0.34345534111993187,
+        "Element Accuracy": 0.38949671772428884,
+        "Step Success": 0.33552151714077316,
+        "Episode Success": 0.33552151714077316,
+        "Operation F1 categories": [
+            0.9911032028469751,
+            0.03926282051282051,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.38949671772428884,
+        "Macro Operation F1": 0.8170131291028446,
+        "Macro Step Success Rate": 0.33552151714077316
+    }
+}

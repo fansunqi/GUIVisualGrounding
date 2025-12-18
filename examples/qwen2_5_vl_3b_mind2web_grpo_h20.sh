@@ -4,7 +4,6 @@ EXP_NAME=mind2web_gt_history_fix_norm_grpo_qwen2_5_vl_3b_h20_try2
 MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_h20.yaml
-# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/762e2f2708c887222a07179bb847affd3e23e6f5
 DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
 
 # Create SAVE_PATH directory if it doesn't exist

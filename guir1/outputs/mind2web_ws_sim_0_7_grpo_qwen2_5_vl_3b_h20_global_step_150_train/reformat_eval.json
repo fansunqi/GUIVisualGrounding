@@ -1,0 +1,16 @@
+{
+    "train": {
+        "Operation F1": 0.33398692810457514,
+        "Element Accuracy": 0.35508090614886734,
+        "Step Success": 0.34511326860841424,
+        "Episode Success": 0.34511326860841424,
+        "Operation F1 categories": [
+            1.0,
+            0.0019607843137254897,
+            0.0
+        ],
+        "Macro Element Accuracy": 0.35508090614886734,
+        "Macro Operation F1": 0.8370010787486516,
+        "Macro Step Success Rate": 0.34511326860841424
+    }
+}
