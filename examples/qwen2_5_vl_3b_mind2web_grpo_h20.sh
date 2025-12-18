@@ -1,6 +1,6 @@
 set -x
 
-EXP_NAME=mind2web_train_new_gt_history_r1gui_v2_grpo_qwen2_5_vl_3b_h20
+EXP_NAME=mind2web_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20
 MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_h20.yaml
@@ -28,7 +28,7 @@ python3 -m verl.trainer.main \
     data.system_prompt="${SYSTEM_PROMPT}" \
     worker.actor.model.model_path=${MODEL_PATH} \
     worker.rollout.tensor_parallel_size=1 \
-    worker.rollout.enable_chunked_prefill=false \
+    worker.reward.compute_score=r1gui_org \
     worker.reward.compute_score=r1gui_v2 \
     trainer.experiment_name=${EXP_NAME} \
     trainer.n_gpus_per_node=8 \
