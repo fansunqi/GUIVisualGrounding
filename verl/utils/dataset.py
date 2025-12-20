@@ -157,6 +157,7 @@ class RLHFDataset(Dataset):
             self.dataset = load_dataset("parquet", data_files=data_path, split="train")
         else:  # remote dataset
             self.dataset = load_dataset(data_path, split=data_split)
+        print("Loaded dataset with %d samples" % (len(self.dataset)))
 
     def __len__(self):
         return len(self.dataset)
