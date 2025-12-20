@@ -1,0 +1,26 @@
+{
+  "total": {
+    "test_task": 2080,
+    "test_domain": 5817,
+    "test_website": 1371,
+    "all": 9268
+  },
+  "valid": {
+    "test_task": 2080,
+    "test_domain": 5817,
+    "test_website": 1371,
+    "all": 9268
+  },
+  "correct": {
+    "test_task": 1192,
+    "test_domain": 3375,
+    "test_website": 794,
+    "all": 5361
+  },
+  "acc": {
+    "test_task": 0.573076923076923,
+    "test_domain": 0.5801959773078906,
+    "test_website": 0.5791393143690736,
+    "all": 0.5784419507984463
+  }
+}
