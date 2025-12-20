@@ -164,6 +164,10 @@ class RLHFDataset(Dataset):
     def __getitem__(self, index):
         row_dict: dict = self.dataset[index]
 
+        if 'instruction' not in row_dict:
+            print("row_dict: ", row_dict)
+            raise ValueError("The dataset must contain an 'instruction' field.")
+        
         # prompt_str: str = row_dict[self.prompt_key]
         text=row_dict['instruction']
         history=row_dict['history']

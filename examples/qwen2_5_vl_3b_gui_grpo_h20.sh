@@ -1,7 +1,8 @@
 set -x
 
-EXP_NAME=gui_r1gui_org_grpo_qwen2_5_vl_3b_h20
-MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
+EXP_NAME=gui_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20
+# MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
+MODEL_PATH=/root/datasets/fsq/gui_r1_exp/mind2web_meta_task_ws_org_sim_0_9_grpo_qwen2_5_vl_3b_h20/global_step_160/actor/huggingface
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_gui_h20.yaml
 DATA_DIR=/root/cache/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52
@@ -39,7 +40,6 @@ python3 -m verl.trainer.main \
     data.val_batch_size=1024 \
     trainer.save_freq=25 \
     data.train_dataset=rlhf \
-    data.val_dataset=rlhf \
-    trainer.load_checkpoint_path=/root/datasets/fsq/gui_r1_exp/gui_r1gui_org_grpo_qwen2_5_vl_3b_h20/global_step_100
+    data.val_dataset=rlhf
 
     
