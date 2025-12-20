@@ -1,6 +1,6 @@
 
 # MODEL_NAME=mind2web_ws_grpo_qwen2_5_vl_3b_global_step_575
-MODEL_NAME=qwen_2_5_vl_3b
+MODEL_NAME=qwen_2_5_vl_3b_h20
 DATA_DIR=./outputs/${MODEL_NAME}
 
 

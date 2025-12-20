@@ -1,7 +1,8 @@
 set -x
 
-EXP_NAME=mind2web_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20
-MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
+EXP_NAME=mind2web_phase3_from1_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20
+# MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
+MODEL_PATH=/root/datasets/fsq/gui_r1_exp/mind2web_ws_org_sim_0_9_grpo_qwen2_5_vl_3b_h20/global_step_50/actor/huggingface
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_h20.yaml
 DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
@@ -39,7 +40,6 @@ python3 -m verl.trainer.main \
     data.val_batch_size=1024 \
     trainer.save_freq=50 \
     data.use_history=true \
-    data.history_num=4 \
-    trainer.load_checkpoint_path=${SAVE_PATH}/global_step_450
+    data.history_num=4
 
     

@@ -15,7 +15,7 @@ chmod -R 777 $TORCHINDUCTOR_CACHE_DIR
 export ray_init_num_cpus=32
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(350)
+ckpt_numbers=(500)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    

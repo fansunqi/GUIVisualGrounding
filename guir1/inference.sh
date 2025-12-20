@@ -48,12 +48,22 @@
 #     --num_actor 7
 
 # h20 qwen2.5-vl-3b
+# export ray_init_num_cpus=32
+# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/762e2f2708c887222a07179bb847affd3e23e6f5
+# LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
+# python inference/inference_vllm_mind2web.py \
+#     --model_path $LOCAL_HF_DIR \
+#     --data_path ${DATA_DIR}/metadata/hf_train.json \
+#     --image_dir ${DATA_DIR}/images \
+#     --output_name qwen_2_5_vl_3b_h20 \
+#     --num_actor 2
+
+# h20 qwen2.5-vl-3b screenspot
 export ray_init_num_cpus=32
-DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/762e2f2708c887222a07179bb847affd3e23e6f5
+DATA_DIR=/root/cache/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52
 LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
-python inference/inference_vllm_mind2web.py \
+python inference/inference_vllm_screenspot.py \
     --model_path $LOCAL_HF_DIR \
-    --data_path ${DATA_DIR}/metadata/hf_train.json \
-    --image_dir ${DATA_DIR}/images \
+    --data_path ${DATA_DIR}/screenspot_pro_test.parquet \
     --output_name qwen_2_5_vl_3b_h20 \
     --num_actor 2

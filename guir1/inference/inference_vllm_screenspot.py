@@ -13,8 +13,19 @@ from PIL import Image
 from io import BytesIO
 from datasets import load_dataset
 from datasets import Dataset as hf_dataset
+
 # 初始化 Ray
-ray.init()
+# 从环境变量中获取ray_init_num_cpus
+ray_init_num_cpus = os.getenv("ray_init_num_cpus")
+
+if ray_init_num_cpus is not None:
+    # 如果环境变量存在，转换为整数并初始化Ray
+    ray.init(num_cpus=int(ray_init_num_cpus))
+    print("Initialized Ray with num_cpus =", ray_init_num_cpus)
+else:
+    # 如果环境变量不存在，使用默认方式初始化Ray
+    ray.init()
+    print("Initialized Ray with default settings")
 
 # 模型路径
 MODEL_PATH = ""
@@ -211,7 +222,7 @@ def main(args):
     # 输出路径
     OUTPUT_DIR = args.output_path
     num_actors = args.num_actor
-    OUTPUT_DIR = os.path.join(OUTPUT_DIR,MODEL_PATH.split('/')[-1])
+    OUTPUT_DIR = os.path.join(OUTPUT_DIR,args.output_name)
     NEW_FILE = os.path.join(OUTPUT_DIR, DATA_PATH.split("/")[-1].replace(".jsonl", "_pred.jsonl").replace('.parquet','.json'))
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     data_chunks = [hf_dataset.from_dict(data[i::num_actors]) for i in range(num_actors)]
@@ -247,6 +258,7 @@ if __name__ == "__main__":
     parser.add_argument('--model_path', type=str, default='<model_path>')
     parser.add_argument('--data_path', type=str, default="<data_path>")
     parser.add_argument('--output_path', type=str, default='./outputs')
+    parser.add_argument('--output_name', type=str, default='<output_name>')
     parser.add_argument('--num_actor', type=int, default=8)
     args = parser.parse_args()
     main(args)
