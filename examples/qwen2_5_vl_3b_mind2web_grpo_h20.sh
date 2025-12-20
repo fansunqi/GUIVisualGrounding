@@ -30,8 +30,8 @@ python3 -m verl.trainer.main \
     data.system_prompt="${SYSTEM_PROMPT}" \
     worker.actor.model.model_path=${MODEL_PATH} \
     worker.rollout.tensor_parallel_size=1 \
+    worker.rollout.enable_chunked_prefill=false \
     worker.reward.compute_score=r1gui_org \
-    worker.reward.compute_score=r1gui_v2 \
     trainer.experiment_name=${EXP_NAME} \
     trainer.n_gpus_per_node=8 \
     trainer.save_checkpoint_path=${SAVE_PATH} \

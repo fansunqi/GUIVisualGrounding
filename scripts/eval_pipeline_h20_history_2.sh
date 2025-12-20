@@ -49,3 +49,4 @@ for ckpt_num in "${ckpt_numbers[@]}"; do
     cd ..
     cd scripts   
 done
+
