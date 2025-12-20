@@ -13,8 +13,8 @@ data:
   max_pixels: 4194304
   min_pixels: 262144
   img_dir: null
-  train_use_task: true
-  val_use_task: true
+  train_use_task: gt
+  val_use_task: gt
   use_history: false
   history_num: 0
 

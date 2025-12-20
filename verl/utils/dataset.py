@@ -267,7 +267,7 @@ class Mind2WebDataset(Dataset):
         min_pixels: int = None,
         use_history: bool = False,
         img_dir: str = None,
-        use_task: bool = True,
+        use_task: str = "gt",
         history_num: int = 0,
         interleaved_history: str = 'tttt',
     ):
@@ -357,10 +357,21 @@ class Mind2WebDataset(Dataset):
         # row_dict.pop('scale', None)
         # images=[row_dict['image']]
         
-        if self.use_task:
+        if self.use_task == "gt":
             text = row_dict['task']
-        else:
+        elif self.use_task == "dummy":
             text = "click any clickable area on the page, such as a button, but not a blank space"
+        elif self.use_task == "meta":
+            if row_dict['step']['operation']['op'].lower() == 'click':
+                text = "click any clickable area on the page, such as a button, but not a blank space"
+            elif row_dict['step']['operation']['op'].lower() == 'type':
+                text = "type any input text into the input field on the page"  
+            elif row_dict['step']['operation']['op'].lower() == 'select':
+                text = "select any valid option from the dropdown menu on the page"
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
         
         image_url = row_dict["img_url"]
         image_path = os.path.join(self.image_dir, image_url)

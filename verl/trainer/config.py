@@ -48,8 +48,8 @@ class DataConfig:
     max_pixels: int = 4194304
     min_pixels: int = 262144
     img_dir: Optional[str] = None
-    train_use_task: bool = True
-    val_use_task: bool = True
+    train_use_task: str = "gt"
+    val_use_task: str = "gt"
     use_history: bool = False
     history_num: int = 0
     train_dataset: str = "mind2web"
