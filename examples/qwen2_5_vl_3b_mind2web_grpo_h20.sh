@@ -39,6 +39,7 @@ python3 -m verl.trainer.main \
     data.val_batch_size=1024 \
     trainer.save_freq=50 \
     data.use_history=true \
-    data.history_num=4
+    data.history_num=4 \
+    trainer.load_checkpoint_path=${SAVE_PATH}/global_step_450
 
     
