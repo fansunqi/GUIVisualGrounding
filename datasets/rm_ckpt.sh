@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # 指定路径和需要保留的编号列表（用空格分隔）
-ckpt_dir="/data/fsq/GUI-R1_exp/mind2web_ws_grpo_qwen2_5_vl_3b_r1wsv2"
+ckpt_dir="/root/datasets/fsq/gui_r1_exp/mind2web_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20"
 # 这里可以添加多个编号
-save_ids=("25" "50" "75" "100" "125" "150" "175" "200" "225")  
+save_ids=("500" "600" "700")  
 
 
 # 遍历 ckpt_dir 下的 global_step_* 文件夹

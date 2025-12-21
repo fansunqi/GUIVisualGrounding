@@ -47,23 +47,59 @@
 #     --data_path /mnt/Shared_06_disk1/fsq/hf_home/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52/screenspot_pro_test.parquet \
 #     --num_actor 7
 
-# h20 qwen2.5-vl-3b
+# h20 qwen2.5-vl-3b mind2web
 # export ray_init_num_cpus=32
-# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/762e2f2708c887222a07179bb847affd3e23e6f5
+# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
 # LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
 # python inference/inference_vllm_mind2web.py \
 #     --model_path $LOCAL_HF_DIR \
-#     --data_path ${DATA_DIR}/metadata/hf_train.json \
+#     --data_path ${DATA_DIR}/metadata/hf_test_full.json \
 #     --image_dir ${DATA_DIR}/images \
 #     --output_name qwen_2_5_vl_3b_h20 \
 #     --num_actor 2
 
 # h20 qwen2.5-vl-3b screenspot
+# export ray_init_num_cpus=32
+# DATA_DIR=/root/cache/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52
+# LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
+# python inference/inference_vllm_screenspot.py \
+#     --model_path $LOCAL_HF_DIR \
+#     --data_path ${DATA_DIR}/screenspot_pro_test.parquet \
+#     --output_name qwen_2_5_vl_3b_h20 \
+#     --num_actor 2
+
+# h20 qwen2.5-vl-3b mind2web history
+# export CUDA_VISIBLE_DEVICES=2,3
+# export ray_init_num_cpus=32
+# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
+# LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
+# python inference/inference_vllm_mind2web.py \
+#     --model_path $LOCAL_HF_DIR \
+#     --data_path ${DATA_DIR}/metadata/hf_test_full.json \
+#     --image_dir ${DATA_DIR}/images \
+#     --output_name qwen_2_5_vl_3b_h20_history \
+#     --num_actor 2 \
+#     --history_num 4 \
+#     --use_history
+
+# h20 GUI-R1-3B mind2web
+# export ray_init_num_cpus=32
+# DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
+# LOCAL_HF_DIR=/root/cache/hub/models--ritzzai--GUI-R1/snapshots/e74baccc4cfa77074e2d53e99a8244ab9fc2ca10/GUI-R1-3B/
+# python inference/inference_vllm_mind2web.py \
+#     --model_path $LOCAL_HF_DIR \
+#     --data_path ${DATA_DIR}/metadata/hf_test_full.json \
+#     --image_dir ${DATA_DIR}/images \
+#     --output_name GUI-R1_3B_our_prompt \
+#     --num_actor 2
+
+export CUDA_VISIBLE_DEVICES=2,3
 export ray_init_num_cpus=32
-DATA_DIR=/root/cache/hub/datasets--ritzzai--GUI-R1/snapshots/ca55ddaa180c5e8f8b27003221c391efa10a1f52
-LOCAL_HF_DIR=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3
-python inference/inference_vllm_screenspot.py \
+DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
+LOCAL_HF_DIR=/root/cache/hub/models--ritzzai--GUI-R1/snapshots/e74baccc4cfa77074e2d53e99a8244ab9fc2ca10/GUI-R1-3B/
+python inference/inference_vllm_mind2web_guir1.py \
     --model_path $LOCAL_HF_DIR \
-    --data_path ${DATA_DIR}/screenspot_pro_test.parquet \
-    --output_name qwen_2_5_vl_3b_h20 \
+    --data_path ${DATA_DIR}/metadata/hf_test_full.json \
+    --image_dir ${DATA_DIR}/images \
+    --output_name GUI-R1_3B_org_prompt \
     --num_actor 2

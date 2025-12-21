@@ -14,10 +14,14 @@ exp_dir="/root/datasets/fsq/gui_r1_exp"
 #     "mind2web_ws_v2_sim_0_9_grpo_qwen2_5_vl_3b_h20"
 # ]
 
+# exp_name_list = [
+#     "gui_r1gui_org_grpo_qwen2_5_vl_3b_h20",
+#     "mind2web_meta_task_ws_org_sim_0_9_grpo_qwen2_5_vl_3b_h20",
+#     "mind2web_phase3_from1_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20"
+# ]
+
 exp_name_list = [
-    "gui_r1gui_org_grpo_qwen2_5_vl_3b_h20",
-    "mind2web_meta_task_ws_org_sim_0_9_grpo_qwen2_5_vl_3b_h20",
-    "mind2web_phase3_from1_train_new_gt_history_r1gui_org_grpo_qwen2_5_vl_3b_h20"
+    "gui_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20"
 ]
 
 
