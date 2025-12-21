@@ -14,3 +14,63 @@ Type Dev-text : 0.15584415584415584
 Type Dev-icon : 0.013793103448275862
 Type Creative-icon : 0.027972027972027972
 Type CAD-icon : 0.03125
+################qwen_2_5_vl_3b_h20
+################screenspot_pro_test.json
+Type CAD-text : 0.116751269035533
+Type Creative-text : 0.2474747474747475
+Type Scientific-icon : 0.08181818181818182
+Type Scientific-text : 0.4027777777777778
+Type OS-text : 0.12149532710280374
+Type Office-icon : 0.03773584905660377
+Type Office-text : 0.22033898305084745
+Type OS-icon : 0.02247191011235955
+Type Dev-text : 0.15584415584415584
+Type Dev-icon : 0.013793103448275862
+Type Creative-icon : 0.027972027972027972
+Type CAD-icon : 0.03125
+################qwen_2_5_vl_3b_h20
+################screenspot_pro_test.json
+Type CAD : 0.09578544061302682
+Type CAD-icon : 0.03125
+################qwen_2_5_vl_3b_h20
+################screenspot_pro_test.json
+Type CAD : 0.09578544061302682
+Type CAD-icon : 0.03125
+Type CAD-text : 0.116751269035533
+Type Creative : 0.15542521994134897
+Type Creative-icon : 0.027972027972027972
+Type Creative-text : 0.2474747474747475
+Type Dev : 0.08695652173913043
+Type Dev-icon : 0.013793103448275862
+Type Dev-text : 0.15584415584415584
+Type OS : 0.07653061224489796
+Type OS-icon : 0.02247191011235955
+Type OS-text : 0.12149532710280374
+Type Office : 0.1782608695652174
+Type Office-icon : 0.03773584905660377
+Type Office-text : 0.22033898305084745
+Type Scientific : 0.2637795275590551
+Type Scientific-icon : 0.08181818181818182
+Type Scientific-text : 0.4027777777777778
+Type overall : 0.14358001265022138
+################qwen_2_5_vl_3b_h20
+################screenspot_pro_test.json
+Type CAD : 0.09578544061302682
+Type CAD-icon : 0.03125
+Type CAD-text : 0.116751269035533
+Type Creative : 0.15542521994134897
+Type Creative-icon : 0.027972027972027972
+Type Creative-text : 0.2474747474747475
+Type Dev : 0.08695652173913043
+Type Dev-icon : 0.013793103448275862
+Type Dev-text : 0.15584415584415584
+Type OS : 0.07653061224489796
+Type OS-icon : 0.02247191011235955
+Type OS-text : 0.12149532710280374
+Type Office : 0.1782608695652174
+Type Office-icon : 0.03773584905660377
+Type Office-text : 0.22033898305084745
+Type Scientific : 0.2637795275590551
+Type Scientific-icon : 0.08181818181818182
+Type Scientific-text : 0.4027777777777778
+Type overall : 0.14358001265022138

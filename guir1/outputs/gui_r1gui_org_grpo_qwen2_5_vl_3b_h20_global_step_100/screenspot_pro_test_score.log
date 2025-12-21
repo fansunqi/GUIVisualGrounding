@@ -12,3 +12,24 @@ Type Creative-icon : 0.03496503496503497
 Type Dev-icon : 0.05517241379310345
 Type CAD-icon : 0.0625
 Type OS-icon : 0.033707865168539325
+################gui_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_100
+################screenspot_pro_test.json
+Type CAD : 0.22988505747126436
+Type CAD-icon : 0.0625
+Type CAD-text : 0.28426395939086296
+Type Creative : 0.25806451612903225
+Type Creative-icon : 0.03496503496503497
+Type Creative-text : 0.41919191919191917
+Type Dev : 0.2040133779264214
+Type Dev-icon : 0.05517241379310345
+Type Dev-text : 0.34415584415584416
+Type OS : 0.1683673469387755
+Type OS-icon : 0.033707865168539325
+Type OS-text : 0.2803738317757009
+Type Office : 0.44782608695652176
+Type Office-icon : 0.11320754716981132
+Type Office-text : 0.5480225988700564
+Type Scientific : 0.4094488188976378
+Type Scientific-icon : 0.19090909090909092
+Type Scientific-text : 0.5763888888888888
+Type overall : 0.2839974699557242

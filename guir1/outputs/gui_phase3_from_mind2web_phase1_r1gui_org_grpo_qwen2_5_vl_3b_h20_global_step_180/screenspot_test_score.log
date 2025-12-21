@@ -6,3 +6,15 @@ Type mobile-text : 0.9633699633699634
 Type mobile-icon : 0.7903930131004366
 Type web-text : 0.8826086956521739
 Type web-icon : 0.6893203883495146
+################gui_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_180
+################screenspot_test.json
+Type desktop : 0.7934131736526946
+Type desktop-icon : 0.6071428571428571
+Type desktop-text : 0.9278350515463918
+Type mobile : 0.8844621513944223
+Type mobile-icon : 0.7903930131004366
+Type mobile-text : 0.9633699633699634
+Type overall : 0.8286163522012578
+Type web : 0.7912844036697247
+Type web-icon : 0.6893203883495146
+Type web-text : 0.8826086956521739

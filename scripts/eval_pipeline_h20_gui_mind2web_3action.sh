@@ -4,7 +4,7 @@ cd /apdcephfs_private/qy/projects/fsq/GUI-R1-Evol-2/scripts/
 
 EXP_DIR=/root/datasets/fsq/gui_r1_exp
 DATA_DIR=/root/cache/hub/datasets--fansunqi--Mind2Web_R1/snapshots/70f9286e9c22b585b28c2fe6e766fd57977df18b
-SAVE_NAME=gui_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20
+SAVE_NAME=mind2web_parquet_r1gui_org_grpo_qwen2_5_vl_3b_h20
 OUTPUT_DIR=/apdcephfs_private/qy/projects/fsq/GUI-R1-Evol-2/guir1/outputs
 
 export TORCH_COMPILE_CACHE=/root/datasets/fsq/vllm_cache
@@ -13,10 +13,10 @@ mkdir -p $TORCHINDUCTOR_CACHE_DIR
 chmod -R 777 $TORCHINDUCTOR_CACHE_DIR
 
 export ray_init_num_cpus=32
-export CUDA_VISIBLE_DEVICES=4,5
+export CUDA_VISIBLE_DEVICES=2,3
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(50 100 125 150 175 180)
+ckpt_numbers=(200 250 300 350)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    

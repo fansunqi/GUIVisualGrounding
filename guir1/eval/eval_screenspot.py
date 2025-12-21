@@ -60,11 +60,20 @@ def evaluate(args):
         gt_bbox=gt['gt_bbox']
         pred_x,pred_y=pred['pred_coord'][:2]
         score_dict[category+"_"+"full"] += 1
+        
+        group=gt['group']
+        score_dict[group+"_"+"full"] += 1
+        
+        score_dict["overall_full"] += 1
+        
         if gt_bbox[0]<pred_x<gt_bbox[2] and gt_bbox[1]<pred_y<gt_bbox[3]:
             score_dict[category] += 1
+            
+            score_dict[group] += 1
+            score_dict["overall"] += 1
 
-
-    for key in [k for k in score_dict.keys() if not k.endswith("full")]:
+    key_list = sorted([k for k in score_dict.keys() if not k.endswith("full")])
+    for key in key_list:
         logger.info(f"Type {key} : {(score_dict[key] / score_dict[key+'_full'])}")
 
 if __name__ == '__main__':
