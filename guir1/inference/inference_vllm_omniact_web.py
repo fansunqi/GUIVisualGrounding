@@ -95,7 +95,7 @@ class MultiModalDataset(Dataset):
 
         # sys_prompt='''A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> nd <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>'''
         text=(
-            f"You are GUI-R1, a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}', with the action history being '{history}'.\n"
+            f"You are a reasoning GUI Agent Assistant. In this UI screenshot <image>, I want you to continue executing the command '{text}', with the action history being '{history}'.\n"
             "Please provide the action to perform (enumerate from ['press_tab', 'moveto', 'rightclick', 'press_enter', 'scroll', 'click', 'press_down', 'hotkey', 'press_space', 'doubleclick']), the point where the cursor is moved to (integer) if a click is performed, and any input text required to complete the action.\n"
             "Output the thinking process in <think> </think> tags, and the final answer in <answer> </answer> tags as follows:\n"
             "<think> ... </think> <answer>[{'action': enum['press_tab', 'moveto', 'rightclick', 'press_enter', 'scroll', 'click', 'press_down', 'hotkey', 'press_space', 'doubleclick'], 'point': [x, y], 'input_text': 'no input text [default]'}]</answer>\n"
