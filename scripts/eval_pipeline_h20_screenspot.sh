@@ -15,7 +15,7 @@ chmod -R 777 $TORCHINDUCTOR_CACHE_DIR
 export ray_init_num_cpus=32
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(200 250 300 350 400 450)
+ckpt_numbers=(200)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    
@@ -40,14 +40,14 @@ for ckpt_num in "${ckpt_numbers[@]}"; do
     python eval/eval_screenspot.py \
         --model_id ${SAVE_NAME}_global_step_$ckpt_num  \
         --prediction_file_path ${OUTPUT_DIR}/${SAVE_NAME}_global_step_${ckpt_num}/screenspot_test.json
-    python inference/inference_vllm_screenspot.py \
-        --model_path $LOCAL_HF_DIR \
-        --data_path ${DATA_DIR}/screenspot_pro_test.parquet \
-        --output_name ${SAVE_NAME}_global_step_$ckpt_num \
-        --num_actor 2
-    python eval/eval_screenspot.py \
-        --model_id ${SAVE_NAME}_global_step_$ckpt_num  \
-        --prediction_file_path ${OUTPUT_DIR}/${SAVE_NAME}_global_step_${ckpt_num}/screenspot_pro_test.json
+    # python inference/inference_vllm_screenspot.py \
+    #     --model_path $LOCAL_HF_DIR \
+    #     --data_path ${DATA_DIR}/screenspot_pro_test.parquet \
+    #     --output_name ${SAVE_NAME}_global_step_$ckpt_num \
+    #     --num_actor 2
+    # python eval/eval_screenspot.py \
+    #     --model_id ${SAVE_NAME}_global_step_$ckpt_num  \
+    #     --prediction_file_path ${OUTPUT_DIR}/${SAVE_NAME}_global_step_${ckpt_num}/screenspot_pro_test.json
     cd ..
     cd scripts   
 done

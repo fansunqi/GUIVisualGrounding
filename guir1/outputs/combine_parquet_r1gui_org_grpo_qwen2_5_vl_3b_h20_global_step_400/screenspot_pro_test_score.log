@@ -1,0 +1,21 @@
+################combine_parquet_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_400
+################screenspot_pro_test.json
+Type CAD : 0.3486590038314176
+Type CAD-icon : 0.09375
+Type CAD-text : 0.43147208121827413
+Type Creative : 0.2756598240469208
+Type Creative-icon : 0.06293706293706294
+Type Creative-text : 0.4292929292929293
+Type Dev : 0.22742474916387959
+Type Dev-icon : 0.06896551724137931
+Type Dev-text : 0.37662337662337664
+Type OS : 0.20408163265306123
+Type OS-icon : 0.06741573033707865
+Type OS-text : 0.3177570093457944
+Type Office : 0.5347826086956522
+Type Office-icon : 0.16981132075471697
+Type Office-text : 0.6440677966101694
+Type Scientific : 0.4094488188976378
+Type Scientific-icon : 0.20909090909090908
+Type Scientific-text : 0.5625
+Type overall : 0.3289057558507274

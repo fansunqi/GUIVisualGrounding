@@ -1,0 +1,12 @@
+################combine_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_250
+################screenspot_test.json
+Type desktop : 0.7994011976047904
+Type desktop-icon : 0.6214285714285714
+Type desktop-text : 0.9278350515463918
+Type mobile : 0.8764940239043825
+Type mobile-icon : 0.759825327510917
+Type mobile-text : 0.9743589743589743
+Type overall : 0.824685534591195
+Type web : 0.7844036697247706
+Type web-icon : 0.6844660194174758
+Type web-text : 0.8739130434782608

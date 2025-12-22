@@ -2,7 +2,7 @@ from huggingface_hub import snapshot_download, HfFileSystem
 
 # 配置参数
 dataset_name = "fansunqi/HTML"  # 数据集标识（如 "imdb"、"facebook/bart-base"）
-file_path_in_repo = "screenshot_rendered_test_mhtml.zip"  # 目标文件在数据集中的路径（从 Files 页面复制）
+file_path_in_repo = "*_wo_href.zip"  # 目标文件在数据集中的路径（从 Files 页面复制）
 save_dir = "../../GUI-agent-data-process/"  # 本地保存目录（自动创建不存在的目录）
 token = "xxx"  # 若为私有数据集，传入你的 HF token（从 https://huggingface.co/settings/tokens 获取）
 

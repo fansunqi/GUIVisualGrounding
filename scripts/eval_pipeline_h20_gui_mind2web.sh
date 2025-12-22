@@ -16,7 +16,7 @@ export ray_init_num_cpus=32
 # export CUDA_VISIBLE_DEVICES=2,3
 
 # 遍历ckpt编号，从1到10为例
-ckpt_numbers=(200 250 300 350)
+ckpt_numbers=(475 500 525 550 575)
 for ckpt_num in "${ckpt_numbers[@]}"; do
     echo "Processing ckpt number: $ckpt_num"
    

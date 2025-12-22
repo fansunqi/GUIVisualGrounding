@@ -1,0 +1,21 @@
+################combine_phase3_from_mind2web_phase1_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_350
+################screenspot_pro_test.json
+Type CAD : 0.2796934865900383
+Type CAD-icon : 0.0625
+Type CAD-text : 0.350253807106599
+Type Creative : 0.25806451612903225
+Type Creative-icon : 0.03496503496503497
+Type Creative-text : 0.41919191919191917
+Type Dev : 0.2140468227424749
+Type Dev-icon : 0.020689655172413793
+Type Dev-text : 0.3961038961038961
+Type OS : 0.22959183673469388
+Type OS-icon : 0.11235955056179775
+Type OS-text : 0.32710280373831774
+Type Office : 0.5
+Type Office-icon : 0.18867924528301888
+Type Office-text : 0.5932203389830508
+Type Scientific : 0.4015748031496063
+Type Scientific-icon : 0.18181818181818182
+Type Scientific-text : 0.5694444444444444
+Type overall : 0.3080328905755851

@@ -1,6 +1,6 @@
 set -x
 
-EXP_NAME=mind2web_test_meta_task_ws_org_grpo_qwen2_5_vl_3b_h20
+EXP_NAME=mind2web_test_wo_href_meta_task_ws_org_grpo_qwen2_5_vl_3b_h20
 MODEL_PATH=/root/cache/hub/models--Qwen--Qwen2.5-VL-3B-Instruct/snapshots/66285546d2b821cf421d4f5eb2576359d3770cd3  # replace it with your local file path
 SAVE_PATH=/root/datasets/fsq/gui_r1_exp/${EXP_NAME}
 CONFIG_PATH=examples/config_mind2web_h20.yaml
@@ -22,7 +22,7 @@ mkdir -p "${TENSORBOARD_DIR}"
 
 python3 -m verl.trainer.main \
     config=${CONFIG_PATH} \
-    data.train_files=${DATA_DIR}/metadata/hf_test_full_ws_pretrain_png.json \
+    data.train_files=${DATA_DIR}/metadata/hf_test_full_ws_pretrain_png_wo_href_fixed.json \
     data.val_files=${DATA_DIR}/metadata/hf_test_task.json \
     data.img_dir=${DATA_DIR}/images_mind2web_test_png \
     data.system_prompt="${SYSTEM_PROMPT}" \

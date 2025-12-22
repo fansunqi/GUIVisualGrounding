@@ -1,0 +1,12 @@
+################combine_parquet_r1gui_org_grpo_qwen2_5_vl_3b_h20_global_step_300
+################screenspot_test.json
+Type desktop : 0.781437125748503
+Type desktop-icon : 0.5857142857142857
+Type desktop-text : 0.9226804123711341
+Type mobile : 0.8645418326693227
+Type mobile-icon : 0.7379912663755459
+Type mobile-text : 0.9706959706959707
+Type overall : 0.8183962264150944
+Type web : 0.7935779816513762
+Type web-icon : 0.6893203883495146
+Type web-text : 0.8869565217391304
